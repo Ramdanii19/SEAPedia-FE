@@ -1,6 +1,22 @@
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 import { ProfileSection } from "@/features/auth/sections/ProfileSection";
 
 export function ProfileView() {
+  const router = useRouter();
+  const { user, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.replace("/login");
+    }
+  }, [isLoading, user, router]);
+
+  if (isLoading || !user) return null;
+
   return (
     <div className="relative min-h-screen flex flex-col bg-[#f8f9fb]">
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
