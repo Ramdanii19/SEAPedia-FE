@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { loginSchema, LoginInput } from "@/features/auth/schema/auth.schema";
 import authService from "@/features/auth/service/auth.service";
 import { useAuth } from "@/contexts/AuthContext";
-import { roleHome } from "@/utils/roleHome";
 
 export function useLogin() {
   const router = useRouter();
@@ -23,12 +22,14 @@ export function useLogin() {
     setServerError(null);
     try {
       const res = await authService.login(data);
-      const { user, token, needRoleSelection } = res.data;
+      const { user, token } = res.data;
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setSession(user as any, token);
 
-      router.push(needRoleSelection ? "/select-role" : roleHome(user.activeRole));
+      // Selalu ke /select-role; RoleSelectionView akan auto-redirect
+      // ke dashboard jika activeRole sudah ada
+      router.push("/select-role");
     } catch (err: unknown) {
       const msg =
         err && typeof err === "object" && "message" in err

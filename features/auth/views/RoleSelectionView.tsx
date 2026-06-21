@@ -13,40 +13,36 @@ export function RoleSelectionView() {
 
   useEffect(() => {
     if (isLoading) return;
-
-    // Not logged in → login
-    if (!user) {
-      router.replace("/login");
-      return;
-    }
-
-    // activeRole already set → go to their home
-    if (activeRole) {
-      router.replace(roleHome(activeRole as unknown as Role));
-      return;
-    }
-
-    // Only 1 non-admin role → auto-select (handled via useSelectRole in section)
+    if (!user) { router.replace("/login"); return; }
+    if (activeRole) { router.replace(roleHome(activeRole as unknown as Role)); return; }
   }, [isLoading, user, activeRole, router]);
 
   if (isLoading || !user) return null;
 
   return (
     <div className="relative min-h-screen flex flex-col overflow-x-hidden bg-[#f8f9fb]">
-      {/* Atmospheric blobs */}
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-[#bee5fd]/20 blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-[#89f5e7]/20 blur-[120px]" />
-      </div>
+      {/* Mesh gradient */}
+      <div
+        className="fixed inset-0 -z-10 opacity-40 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(at 0% 0%, #89f5e7 0%, transparent 50%), radial-gradient(at 100% 0%, #c2e8ff 0%, transparent 50%), radial-gradient(at 50% 100%, #f8f9fb 0%, transparent 50%)",
+        }}
+      />
 
-      <main className="relative z-10 flex-1 flex items-center justify-center px-4 md:px-10 py-20">
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 ease-out w-full flex justify-center">
+      {/* Header */}
+      <header className="w-full py-8 px-10 flex justify-center z-10">
+        <h1 className="text-3xl font-bold tracking-tighter text-[#00685f]">SEAPEDIA</h1>
+      </header>
+
+      <main className="relative z-10 flex-1 flex items-center justify-center px-4 md:px-10 py-8">
+        <div className="w-full flex justify-center animate-in fade-in slide-in-from-bottom-4 duration-1000 ease-out">
           <RoleSelectionSection />
         </div>
       </main>
 
-      <footer className="relative z-10 w-full py-4 text-center">
-        <p className="text-xs text-[#6d7a77]">© 2024 SEAPEDIA. Seluruh hak cipta dilindungi.</p>
+      <footer className="relative z-10 w-full py-4 text-center opacity-60">
+        <p className="text-sm text-[#3d4947]">© 2024 SEAPEDIA. Seluruh hak cipta dilindungi.</p>
       </footer>
     </div>
   );
