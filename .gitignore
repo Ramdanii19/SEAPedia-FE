@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+SEAPEDIA-FE-TODO.md
+AGENTS.MD
+CLAUDE.MD

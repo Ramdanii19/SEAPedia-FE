@@ -33,6 +33,13 @@ async function request<T>(
   const json = await res.json();
 
   if (!res.ok) {
+    // Token expired / tidak valid → bersihkan sesi dan paksa login ulang
+    if (res.status === 401 && typeof window !== "undefined") {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.location.replace("/login");
+    }
+
     const err: ApiError = {
       success: false,
       message: json?.message ?? "Terjadi kesalahan",
