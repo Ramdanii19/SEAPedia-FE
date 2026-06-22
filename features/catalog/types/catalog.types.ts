@@ -13,3 +13,15 @@ export type Product = {
   imageUrl: string;
   store: Store;
 };
+
+export type Pagination = {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+};
+
+export type ProductListData = {
+  products: Product[];
+  pagination: Pagination;
+};

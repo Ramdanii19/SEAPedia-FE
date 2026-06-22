@@ -45,9 +45,8 @@ export function useProductList() {
         page:     p,
         limit:    LIMIT,
       });
-      setProducts(res.data);
-      // backend may return total at top-level
-      setTotal((res as any).total ?? res.data.length);
+      setProducts(res.data.products);
+      setTotal(res.data.pagination.total);
     } catch {
       setProducts([]);
       setTotal(0);

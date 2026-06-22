@@ -1,6 +1,6 @@
 import apiClient from "@/services/apiClient";
 import { ApiResponse } from "@/types/common.types";
-import { Product, Store } from "../types/catalog.types";
+import { Product, ProductListData, Store } from "../types/catalog.types";
 
 export type ListProductsParams = {
   search?: string;
@@ -23,7 +23,7 @@ const catalogService = {
     if (params?.minPrice) query.set("minPrice", String(params.minPrice));
     if (params?.maxPrice) query.set("maxPrice", String(params.maxPrice));
     const qs = query.toString();
-    return apiClient.get<ApiResponse<Product[]>>(
+    return apiClient.get<ApiResponse<ProductListData>>(
       qs ? `/products?${qs}` : "/products",
       { auth: false }
     );

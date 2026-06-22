@@ -11,7 +11,7 @@ export function useFeaturedProducts() {
   useEffect(() => {
     catalogService
       .listProducts({ limit: 4 })
-      .then((res) => setProducts(res.data))
+      .then((res) => setProducts(res.data.products))
       .catch(() => setProducts([]))
       .finally(() => setIsLoading(false));
   }, []);
