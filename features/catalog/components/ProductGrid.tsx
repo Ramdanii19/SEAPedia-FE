@@ -1,9 +1,11 @@
+import { cn } from "@/lib/utils";
 import { Product } from "../types/catalog.types";
 import { ProductCard } from "./ProductCard";
 
 type Props = {
   products: Product[];
   isLoading?: boolean;
+  gridClassName?: string;
 };
 
 function Spinner() {
@@ -26,12 +28,12 @@ function EmptyState() {
   );
 }
 
-export function ProductGrid({ products, isLoading = false }: Props) {
+export function ProductGrid({ products, isLoading = false, gridClassName }: Props) {
   if (isLoading) return <Spinner />;
   if (products.length === 0) return <EmptyState />;
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className={cn("grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3", gridClassName)}>
       {products.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}
