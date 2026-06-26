@@ -6,11 +6,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { StarRating } from "./StarRating";
 import { useReviewForm } from "../hooks/useReviewForm";
+import { Review } from "../types/review.types";
 
-type Props = { onSuccess: () => void };
+type Props = {
+  onSuccess: () => void;
+  existing?: Review | null;
+  onCancel?: () => void;
+};
 
-export function ReviewForm({ onSuccess }: Props) {
-  const { form, isSubmitting, error, onSubmit } = useReviewForm(onSuccess);
+export function ReviewForm({ onSuccess, existing, onCancel }: Props) {
+  const { form, isSubmitting, error, isLoggedIn, isEdit, onSubmit } =
+    useReviewForm(onSuccess, existing);
   const {
     register,
     control,
@@ -21,11 +27,15 @@ export function ReviewForm({ onSuccess }: Props) {
     <form onSubmit={onSubmit} className="flex flex-col gap-4">
       {/* Nama Lengkap */}
       <div className="flex flex-col gap-1.5">
-        <label className="text-sm font-medium text-[#191c1e]">Nama Lengkap</label>
+        <label className="text-sm font-medium text-[#191c1e]">
+          Nama Lengkap
+        </label>
         <Input
           placeholder="Masukkan nama Anda"
+          readOnly={isLoggedIn}
           {...register("reviewerName")}
           aria-invalid={!!errors.reviewerName}
+          className={isLoggedIn ? "bg-[#f2f4f6] cursor-not-allowed text-[#6d7a77]" : ""}
         />
         {errors.reviewerName && (
           <p className="text-xs text-red-500">{errors.reviewerName.message}</p>
@@ -63,9 +73,31 @@ export function ReviewForm({ onSuccess }: Props) {
 
       {error && <p className="text-xs text-red-500">{error}</p>}
 
-      <Button type="submit" disabled={isSubmitting} className="w-full bg-[#00685f] hover:bg-[#005049]">
-        {isSubmitting ? "Mengirim..." : "Kirim Ulasan"}
-      </Button>
+      <div className="flex gap-2">
+        {isEdit && onCancel && (
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onCancel}
+            className="flex-1"
+          >
+            Batal
+          </Button>
+        )}
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="flex-1 bg-[#00685f] hover:bg-[#005049]"
+        >
+          {isSubmitting
+            ? isEdit
+              ? "Menyimpan..."
+              : "Mengirim..."
+            : isEdit
+            ? "Simpan Perubahan"
+            : "Kirim Ulasan"}
+        </Button>
+      </div>
     </form>
   );
 }
