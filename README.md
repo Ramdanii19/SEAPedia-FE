@@ -1,5 +1,7 @@
 # SEAPEDIA Frontend
 
+**Live Demo:** [https://sea-pedia-fe.vercel.app](https://sea-pedia-fe.vercel.app)
+
 Marketplace maritim berbasis Next.js (App Router). Frontend ini mengonsumsi REST API SEAPEDIA Backend yang sudah selesai.
 
 ---
