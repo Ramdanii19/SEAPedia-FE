@@ -1,6 +1,7 @@
 export { CheckoutView } from "./views/CheckoutView";
 export { OrderListView } from "./views/OrderListView";
 export { OrderDetailView } from "./views/OrderDetailView";
+export { SellerOrdersView } from "./views/SellerOrdersView";
 export { OrderTimeline } from "./components/OrderTimeline";
 export { OrderStatusBadge } from "./components/OrderStatusBadge";
 export { PriceSummary } from "./components/PriceSummary";
