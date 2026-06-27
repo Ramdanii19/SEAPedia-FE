@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { MapPin, Store, Bike } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatRupiah } from "@/utils/formatRupiah";
@@ -34,10 +35,13 @@ export function JobCard({ job, onTake }: Props) {
       <div className="flex items-start justify-between gap-3">
         <div className="flex flex-col gap-1.5">
           {/* Store */}
-          <div className="flex items-center gap-1.5 text-sm font-semibold text-[#191c1e]">
+          <Link
+            href={`/driver/jobs/${job.id}`}
+            className="flex items-center gap-1.5 text-sm font-semibold text-[#191c1e] hover:text-[#00685f]"
+          >
             <Store size={14} className="text-[#00685f] shrink-0" />
             {storeName}
-          </div>
+          </Link>
           {/* Destination */}
           <div className="flex items-start gap-1.5 text-xs text-[#6d7a77]">
             <MapPin size={13} className="shrink-0 mt-0.5" />
