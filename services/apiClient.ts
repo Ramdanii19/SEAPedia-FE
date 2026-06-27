@@ -63,6 +63,35 @@ const apiClient = {
 
   delete: <T>(path: string, options?: Options) =>
     request<T>("DELETE", path, undefined, options),
+
+  upload: async <T>(path: string, formData: FormData): Promise<T> => {
+    const token = getToken();
+    const headers: Record<string, string> = {};
+    if (token) headers["Authorization"] = `Bearer ${token}`;
+
+    const res = await fetch(`${BASE_URL}${path}`, {
+      method: "POST",
+      headers,
+      body: formData,
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+      if (res.status === 401 && typeof window !== "undefined") {
+        clearStorageSession();
+        window.location.replace("/login");
+      }
+      const err: ApiError = {
+        success: false,
+        message: json?.message ?? "Terjadi kesalahan",
+        errors: json?.errors,
+      };
+      throw err;
+    }
+
+    return json as T;
+  },
 };
 
 export default apiClient;
