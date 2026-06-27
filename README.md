@@ -250,3 +250,169 @@ Logout manual (`useLogout`) memanggil endpoint BE logout, lalu `clearSession()` 
 ## Security Note
 
 Frontend guard adalah **lapisan UX** semata — mencegah navigasi tidak sengaja dan menyembunyikan UI yang tidak relevan. Seorang pengguna yang memanipulasi localStorage atau memanggil API langsung tetap akan ditolak oleh backend dengan HTTP 401/403. Jangan pernah mengandalkan FE guard sebagai batas keamanan.
+
+---
+
+## Panduan Demo End-to-End
+
+Ikuti langkah-langkah berikut secara berurutan untuk mendemonstrasikan seluruh alur SEAPEDIA.
+
+---
+
+### 1. Guest — Browse Katalog & Baca Ulasan
+
+1. Buka `http://localhost:3000` tanpa login.
+2. Scroll halaman landing — lihat daftar ulasan publik di bagian bawah.
+3. Klik **Katalog** di navbar → halaman `/products`.
+4. Klik salah satu produk → halaman detail `/products/:id`.
+5. Perhatikan: tombol "Tambah ke Keranjang" tidak muncul (bukan BUYER), form ulasan muncul untuk guest.
+6. Isi ulasan sebagai guest (nama, rating bintang 1–5, komentar) → klik **Kirim Ulasan**.
+7. Ulasan langsung muncul di daftar. *(Catatan: guest review tidak terikat akun.)*
+
+---
+
+### 2. Register Akun Multi-Role
+
+1. Klik **Daftar** di navbar → `/register`.
+2. Isi nama lengkap, email baru, password (min 6 karakter).
+3. Centang **minimal dua role** sekaligus, misal: `BUYER` + `SELLER` + `DRIVER`.
+4. Submit → otomatis masuk ke `/select-role`.
+
+---
+
+### 3. Pilih Role Aktif
+
+1. Di halaman `/select-role`, pilih **SELLER**.
+2. Perhatikan: navbar berubah menampilkan menu seller; BottomNav menampilkan Produk / Toko / Laporan.
+3. Klik **Ganti Peran** di dropdown profil → pilih **BUYER** → konfirmasi navbar berubah lagi.
+
+---
+
+### 4. Seller — Buat Toko & Produk
+
+1. Di select-role, pilih **SELLER**.
+2. Pergi ke `/seller/store` → isi nama toko dan deskripsi → klik **Simpan**.
+3. Pergi ke `/seller/products` → klik **Tambah Produk**.
+4. Isi nama produk, deskripsi, harga (≥ 0), stok (≥ 0), URL gambar (opsional) → **Simpan**.
+5. Buat minimal 2 produk agar demo keranjang lebih menarik.
+6. Kembali ke daftar produk — lihat tombol **Edit** dan **Hapus** di tiap baris.
+
+---
+
+### 5. Buyer — Top Up Dompet & Tambah Alamat
+
+1. Ganti role ke **BUYER**.
+2. Pergi ke `/wallet`.
+3. Klik **Top Up** → masukkan nominal (misal Rp 500.000) → konfirmasi.
+4. Saldo dompet bertambah di kartu "Saldo Dompet".
+5. Gulir ke bagian **Alamat** → klik **Tambah Alamat**.
+6. Isi nama penerima, nomor telepon (format `08xxxxxxxxxx`), dan alamat lengkap → **Simpan**.
+7. Tandai sebagai alamat utama jika perlu.
+
+---
+
+### 6. Buyer — Tambah ke Keranjang (One-Store Rule)
+
+1. Buka `/products` → klik produk dari toko yang sudah dibuat.
+2. Pilih jumlah (tombol +/−) → klik **Tambah ke Keranjang**.
+3. Konfirmasi notifikasi "Ditambahkan ✓".
+4. Tambah produk kedua dari **toko yang sama** → berhasil.
+5. Coba tambah produk dari **toko lain** → muncul Dialog konfirmasi "Keranjang akan dikosongkan...". Klik **Batal** untuk membatalkan, atau **Lanjutkan** untuk mengganti isi keranjang.
+6. Pergi ke `/cart` → lihat daftar item, jumlah, dan subtotal.
+
+---
+
+### 7. Admin — Buat Voucher
+
+1. Login atau ganti role ke **ADMIN** (gunakan akun `admin@seapedia.id`).
+2. Pergi ke `/admin/discounts`.
+3. Klik **Buat Voucher** → isi:
+   - Nama: `Diskon Spesial`
+   - Kode: `DEMO10`
+   - Tipe: `Persentase (%)`
+   - Nilai: `10`
+   - Sisa Pemakaian: `100`
+   - Kedaluwarsa: tanggal besok atau lebih
+4. Klik **Buat Voucher** → voucher muncul di tabel.
+5. Kembali ke role BUYER.
+
+---
+
+### 8. Buyer — Checkout dengan Voucher
+
+1. Dari `/cart`, klik **Checkout**.
+2. Pilih alamat pengiriman dari daftar.
+3. Pilih metode pengiriman (Pickup = gratis, Delivery = estimasi ongkir).
+4. Di bagian **Kode Diskon**, masukkan `DEMO10` di field Voucher → klik **Pakai**.
+5. Badge hijau muncul: "Diskon Spesial — Diskon 10%".
+6. Lihat **Ringkasan Pembayaran** — tampilkan: Subtotal, Diskon, Ongkir, PPN (12%), Total.
+7. Pastikan saldo dompet cukup (jika tidak → link Top Up muncul).
+8. Klik **Bayar Rp X** → pesanan dibuat → redirect ke `/orders/:id`.
+9. Di halaman detail, lihat `OrderTimeline` menampilkan status awal.
+
+---
+
+### 9. Seller — Proses Pesanan Masuk
+
+1. Ganti role ke **SELLER**.
+2. Pergi ke `/seller/orders` → pesanan dari buyer muncul di tabel.
+3. Klik ID pesanan → halaman detail `/seller/orders/:id`.
+4. Status pesanan saat ini terlihat di badge dan timeline.
+5. Jika status `preparing` → tombol **Proses Pesanan** muncul di header.
+6. Klik → pesanan diproses → timeline diperbarui → tombol hilang.
+7. Klik **Segarkan** di bagian Riwayat Status untuk melihat perubahan terkini.
+
+---
+
+### 10. Driver — Ambil & Selesaikan Job
+
+1. Ganti role ke **DRIVER** (atau login akun driver).
+2. Pergi ke `/driver/jobs` → daftar job tersedia muncul (pesanan yang butuh pengiriman).
+3. Klik nama toko di salah satu kartu → halaman detail `/driver/jobs/:id`.
+4. Lihat info: toko asal, alamat tujuan, penghasilan, daftar item, timeline.
+5. Klik **Ambil Job Ini** → status job berubah ke `TAKEN`.
+6. Tombol berganti menjadi **Selesaikan Pengiriman**.
+7. Klik → job selesai → penghasilan tercatat → kembali ke dashboard.
+8. Di `/driver` → lihat StatCard "Total Penghasilan" dan "Job Selesai" bertambah.
+
+---
+
+### 11. Buyer — Konfirmasi Pesanan Selesai
+
+1. Kembali ke role **BUYER**.
+2. Pergi ke `/orders/:id`.
+3. Klik **Segarkan** di bagian Riwayat Status.
+4. Timeline menampilkan status terbaru setelah driver menyelesaikan pengiriman.
+5. Lihat **Rincian Pembayaran** — nilai `discountAmount` dan `ppnAmount` adalah nilai final dari BE.
+
+---
+
+### 12. Admin — Monitor Platform
+
+1. Login / ganti ke role **ADMIN**.
+2. Pergi ke `/admin` → halaman Monitoring.
+3. StatCard di atas menampilkan total Users dan Orders.
+4. Klik tab **Orders** → lihat semua pesanan dengan status terkini.
+5. Klik tab **Vouchers** → voucher `DEMO10` terlihat beserta sisa pemakaian.
+6. Klik tab **Deliveries** → lihat job driver yang sudah selesai.
+7. Klik tab **Overdue** → saat ini kosong (belum ada pesanan kedaluwarsa).
+
+---
+
+### 13. Admin — Simulasi Waktu & Order Kedaluwarsa
+
+> Skenario ini mendemonstrasikan mekanisme otomatis penanganan pesanan yang terlambat.
+
+1. Di `/admin/operations`, lihat kartu **Simulasi Waktu Sistem**.
+2. Pastikan ada pesanan aktif yang belum selesai (misal: masih status `pending` atau `confirmed`).
+3. Klik **Majukan 1 Hari** → Dialog konfirmasi muncul → klik **Ya, Majukan**.
+4. Pesan sukses muncul; waktu server maju 1 hari. Ulangi beberapa kali hingga pesanan melewati batas waktu.
+5. Klik **Proses Order Telat** → Dialog konfirmasi merah muncul → klik **Ya, Proses**.
+6. Tabel **Pesanan Overdue** di bawah diperbarui otomatis.
+7. Status pesanan yang kedaluwarsa berubah menjadi `cancelled` / `returned` (badge merah).
+8. Kembali ke tab **Overdue** di halaman Monitoring → pesanan tampil dengan timestamp diperbarui.
+9. Buka `/orders/:id` sebagai Buyer → timeline menampilkan status "Dikembalikan" dengan catatan waktu.
+
+---
+
+*Demo selesai. Seluruh alur dari guest hingga resolusi pesanan kedaluwarsa telah didemonstrasikan.*
