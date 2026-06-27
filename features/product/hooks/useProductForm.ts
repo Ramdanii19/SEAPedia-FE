@@ -9,7 +9,7 @@ import apiClient from "@/services/apiClient";
 import { ApiResponse } from "@/types/common.types";
 
 type Options = {
-  productId?: number;
+  productId?: string;
   defaultValues?: Partial<ProductFormValues>;
   onSuccess: () => void;
 };

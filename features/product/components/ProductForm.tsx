@@ -8,7 +8,7 @@ import { useProductForm } from "../hooks/useProductForm";
 import { ProductFormValues } from "../schema/product.schema";
 
 type Props = {
-  productId?: number;
+  productId?: string;
   defaultValues?: Partial<ProductFormValues>;
   onSuccess: () => void;
 };

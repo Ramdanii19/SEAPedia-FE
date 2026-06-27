@@ -44,7 +44,7 @@ export function ProductManagementSection() {
 
   async function handleDelete() {
     if (!deleteTarget) return;
-    await productService.deleteProduct(deleteTarget.id);
+    await productService.deleteProduct(deleteTarget._id);
     setDeleteTarget(null);
     reload();
   }
@@ -102,11 +102,11 @@ export function ProductManagementSection() {
             <tbody>
               {products.map((product) => (
                 <ProductRow
-                  key={product.id}
+                  key={product._id}
                   product={product}
                   onEdit={openEdit}
                   onDelete={(id) =>
-                    setDeleteTarget(products.find((p) => p.id === id) ?? null)
+                    setDeleteTarget(products.find((p) => p._id === id) ?? null)
                   }
                 />
               ))}
@@ -124,7 +124,7 @@ export function ProductManagementSection() {
             </DialogTitle>
           </DialogHeader>
           <ProductForm
-            productId={formProduct?.id}
+            productId={formProduct?._id}
             defaultValues={
               formProduct
                 ? {

@@ -6,7 +6,7 @@ import { formatRupiah } from "@/utils/formatRupiah";
 type Props = {
   product: Product;
   onEdit: (product: Product) => void;
-  onDelete: (id: number) => void;
+  onDelete: (id: string) => void;
 };
 
 export function ProductRow({ product, onEdit, onDelete }: Props) {
@@ -45,7 +45,7 @@ export function ProductRow({ product, onEdit, onDelete }: Props) {
           <Button
             variant="outline"
             size="icon-sm"
-            onClick={() => onDelete(product.id)}
+            onClick={() => onDelete(product._id)}
             title="Hapus produk"
             className="border-[#cc4636]/40 text-[#cc4636] hover:bg-[#cc4636]/5"
           >

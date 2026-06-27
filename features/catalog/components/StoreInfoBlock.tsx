@@ -33,7 +33,7 @@ export function StoreInfoBlock({ store }: Props) {
       {/* Actions */}
       <div className="flex gap-2 shrink-0">
         <Link
-          href={`/stores/${store.id}`}
+          href={`/stores/${store._id}`}
           className="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-[#00685f] text-sm font-medium text-[#00685f] hover:bg-[#f0f5f4] transition-colors"
         >
           Kunjungi Toko

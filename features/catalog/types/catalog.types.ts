@@ -1,11 +1,11 @@
 export type Store = {
-  id: number;
+  _id: string;
   storeName: string;
   description: string;
 };
 
 export type Product = {
-  id: number;
+  _id: string;
   name: string;
   description: string;
   price: number;
