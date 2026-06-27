@@ -3,7 +3,6 @@
 import { Home, ShoppingCart, ClipboardList, Bell, User } from "lucide-react";
 import { RouteGuard } from "@/features/auth";
 import { DashboardShell, DashboardMenuItem } from "@/components/layout";
-import { CartProvider } from "@/features/cart";
 
 const MENU: DashboardMenuItem[] = [
   { label: "Beranda",      href: "/",              icon: <Home size={18} /> },
@@ -20,9 +19,7 @@ export default function BuyerLayout({
 }) {
   return (
     <RouteGuard allow={["BUYER"]}>
-      <CartProvider>
-        <DashboardShell menu={MENU}>{children}</DashboardShell>
-      </CartProvider>
+      <DashboardShell menu={MENU}>{children}</DashboardShell>
     </RouteGuard>
   );
 }

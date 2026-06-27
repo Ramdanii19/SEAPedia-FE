@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronRight, BadgeCheck, ShoppingCart, Heart, Minus, Plus } from "lucide-react";
+import { ChevronRight, BadgeCheck, ShoppingCart, Heart, Minus, Plus, Info } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Role } from "@/features/auth/types/auth.types";
+import { useCart } from "@/features/cart";
 import { formatRupiah } from "@/utils/formatRupiah";
 import { useProductDetail } from "../hooks/useProductDetail";
 import { StoreInfoBlock } from "../components/StoreInfoBlock";
@@ -31,9 +32,29 @@ function Skeleton() {
 export function ProductDetailSection({ id }: Props) {
   const { product, isLoading, error } = useProductDetail(id);
   const { user, activeRole } = useAuth();
+  const { add } = useCart();
   const [qty, setQty] = useState(1);
+  const [isAdding, setIsAdding] = useState(false);
+  const [addError, setAddError] = useState<string | null>(null);
+  const [addSuccess, setAddSuccess] = useState(false);
 
   const isBuyer = !!user && (activeRole as unknown as Role) === "BUYER";
+
+  async function handleAddToCart() {
+    if (!product) return;
+    setIsAdding(true);
+    setAddError(null);
+    setAddSuccess(false);
+    try {
+      await add(product.id, qty);
+      setAddSuccess(true);
+      setTimeout(() => setAddSuccess(false), 2000);
+    } catch (err: any) {
+      setAddError(err?.message ?? "Gagal menambahkan ke keranjang");
+    } finally {
+      setIsAdding(false);
+    }
+  }
 
   if (isLoading) return <Skeleton />;
 
@@ -135,28 +156,48 @@ export function ProductDetailSection({ id }: Props) {
           </div>
 
           {/* CTA */}
-          <div className="flex gap-3">
-            {isBuyer ? (
-              <button
-                disabled
-                className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-[#cc4636] py-3 text-sm font-semibold text-white opacity-70 cursor-not-allowed"
-                title="Fitur tersedia segera"
-              >
-                <ShoppingCart size={16} />
-                Tambah ke Keranjang
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-3">
+              {isBuyer ? (
+                <button
+                  onClick={handleAddToCart}
+                  disabled={isAdding || product.stock === 0}
+                  className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-[#cc4636] py-3 text-sm font-semibold text-white hover:bg-[#b33d2f] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  <ShoppingCart size={16} />
+                  {isAdding
+                    ? "Menambahkan..."
+                    : addSuccess
+                    ? "Ditambahkan ✓"
+                    : product.stock === 0
+                    ? "Stok Habis"
+                    : "Tambah ke Keranjang"}
+                </button>
+              ) : (
+                <Link
+                  href="/login"
+                  className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-[#cc4636] py-3 text-sm font-semibold text-white hover:bg-[#b33d2f] transition-colors"
+                >
+                  <ShoppingCart size={16} />
+                  Masuk untuk belanja
+                </Link>
+              )}
+              <button className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-[#bcc9c6] text-[#6d7a77] hover:bg-[#f2f4f6] transition-colors">
+                <Heart size={18} />
               </button>
-            ) : (
-              <Link
-                href="/login"
-                className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-[#cc4636] py-3 text-sm font-semibold text-white hover:bg-[#b33d2f] transition-colors"
-              >
-                <ShoppingCart size={16} />
-                Masuk untuk belanja
-              </Link>
+            </div>
+
+            {/* One-store note */}
+            {isBuyer && (
+              <div className="flex items-start gap-1.5 text-xs text-[#6d7a77]">
+                <Info size={12} className="shrink-0 mt-0.5" />
+                <span>Keranjang hanya mendukung 1 toko per checkout. Menambah produk dari toko berbeda akan menghapus isi keranjang sebelumnya.</span>
+              </div>
             )}
-            <button className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-[#bcc9c6] text-[#6d7a77] hover:bg-[#f2f4f6] transition-colors">
-              <Heart size={18} />
-            </button>
+
+            {addError && (
+              <p className="text-xs text-[#cc4636]">{addError}</p>
+            )}
           </div>
         </div>
       </div>

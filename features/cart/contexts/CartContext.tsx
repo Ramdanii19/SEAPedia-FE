@@ -7,6 +7,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -32,10 +33,11 @@ type CartContextValue = {
 const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [cart, setCart] = useState<Cart | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { user, activeRole } = useAuth();
+  const isBuyer = !!user && (activeRole as string) === "BUYER";
 
-  // one-store conflict state
+  const [cart, setCart] = useState<Cart | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [conflictPending, setConflictPending] = useState<{
     productId: number;
     qty: number;
@@ -43,15 +45,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [isClearing, setIsClearing] = useState(false);
 
   const refresh = useCallback(async () => {
+    if (!isBuyer) {
+      setCart(null);
+      return;
+    }
     try {
       const res = await cartService.getCart();
       setCart(res.data ?? null);
     } catch {
       setCart(null);
     }
-  }, []);
+  }, [isBuyer]);
 
   useEffect(() => {
+    setIsLoading(true);
     refresh().finally(() => setIsLoading(false));
   }, [refresh]);
 
@@ -61,7 +68,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       setCart(res.data ?? null);
     } catch (err: any) {
       const msg: string = err?.message ?? "";
-      // detect "different store" / "beda toko" error from backend
       if (/different store|beda toko|toko lain|store/i.test(msg)) {
         setConflictPending({ productId, qty });
       } else {
@@ -107,7 +113,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     >
       {children}
 
-      {/* One-store conflict dialog */}
       <Dialog
         open={!!conflictPending}
         onOpenChange={(v) => !v && setConflictPending(null)}
@@ -149,6 +154,6 @@ export function useCart(): CartContextValue {
 }
 
 export function useCartItemCount(): number {
-  const { cart } = useCart();
-  return cart?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
+  const ctx = useContext(CartContext);
+  return ctx?.cart?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
 }
