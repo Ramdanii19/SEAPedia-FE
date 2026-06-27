@@ -3,6 +3,7 @@
 import { AlertTriangle, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AddressCard } from "@/features/wallet";
+import { DiscountInput } from "@/features/discount";
 import { formatRupiah } from "@/utils/formatRupiah";
 import { DeliveryMethodSelect } from "../components/DeliveryMethodSelect";
 import { PriceSummary } from "../components/PriceSummary";
@@ -17,6 +18,14 @@ export function CheckoutSection() {
     setSelectedAddressId,
     deliveryMethod,
     setDeliveryMethod,
+    appliedVoucher,
+    appliedPromo,
+    voucherError,
+    promoError,
+    applyVoucher,
+    applyPromo,
+    removeVoucher,
+    removePromo,
     isSubmitting,
     error,
     isBalanceSufficient,
@@ -81,6 +90,26 @@ export function CheckoutSection() {
         <div className="flex flex-col gap-3">
           <p className="text-sm font-semibold text-[#191c1e]">Metode Pengiriman</p>
           <DeliveryMethodSelect value={deliveryMethod} onChange={setDeliveryMethod} />
+        </div>
+
+        {/* Kode diskon */}
+        <div className="rounded-xl border border-[#bcc9c6]/40 bg-white p-4 flex flex-col gap-4">
+          <p className="text-sm font-semibold text-[#191c1e]">Kode Diskon</p>
+          <DiscountInput
+            label="Voucher"
+            onApply={applyVoucher}
+            onRemove={removeVoucher}
+            applied={appliedVoucher}
+            error={voucherError}
+          />
+          <div className="border-t border-[#bcc9c6]/30" />
+          <DiscountInput
+            label="Promo"
+            onApply={applyPromo}
+            onRemove={removePromo}
+            applied={appliedPromo}
+            error={promoError}
+          />
         </div>
 
         {/* Ringkasan item */}

@@ -35,4 +35,5 @@ export type CheckoutPayload = {
   addressId: string;
   deliveryMethod: DeliveryMethod;
   voucherCode?: string;
+  promoCode?: string;
 };
