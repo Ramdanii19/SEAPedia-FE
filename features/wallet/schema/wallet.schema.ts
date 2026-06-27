@@ -8,7 +8,9 @@ export type TopupFormValues = z.infer<typeof topupSchema>;
 
 export const addressSchema = z.object({
   recipientName: z.string().min(2, "Nama penerima minimal 2 karakter"),
-  phone: z.string().min(8, "Nomor telepon tidak valid"),
+  phone: z
+    .string()
+    .regex(/^(\+62|62|0)[0-9]{7,14}$/, "Nomor telepon tidak valid (contoh: 08xxxxxxxxxx)"),
   addressDetail: z.string().min(5, "Alamat terlalu pendek"),
   isDefault: z.boolean().optional(),
 });

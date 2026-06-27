@@ -1,4 +1,5 @@
 import { ApiError } from "@/types/common.types";
+import { getToken, clearStorageSession } from "@/lib/session";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
@@ -17,8 +18,7 @@ async function request<T>(
   };
 
   if (auth) {
-    const token =
-      typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    const token = getToken();
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
     }
@@ -33,10 +33,10 @@ async function request<T>(
   const json = await res.json();
 
   if (!res.ok) {
-    // Token expired / tidak valid → bersihkan sesi dan paksa login ulang
+    // Token expired or invalid — clear session and force re-login.
+    // Note: FE guard is UX only; real authorization lives in the BE.
     if (res.status === 401 && typeof window !== "undefined") {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      clearStorageSession();
       window.location.replace("/login");
     }
 
