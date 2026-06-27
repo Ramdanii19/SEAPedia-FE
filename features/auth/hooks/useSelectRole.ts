@@ -15,8 +15,8 @@ export function useSelectRole() {
   const [serverError, setServerError] = useState<string | null>(null);
 
   const selectableRoles = (user?.roles ?? []).filter(
-    (r) => r !== ("admin" as string)
-  ) as Role[];
+    (r) => (r as string) !== "admin"
+  ) as unknown as Role[];
 
   async function confirm() {
     if (!selected) return;
