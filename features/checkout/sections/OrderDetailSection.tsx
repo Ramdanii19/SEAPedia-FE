@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Store, ArrowLeft } from "lucide-react";
+import { Store, ArrowLeft, RefreshCw } from "lucide-react";
 import { formatRupiah } from "@/utils/formatRupiah";
 import { formatDate } from "@/utils/formatDate";
 import { DELIVERY_METHOD_LABEL } from "@/lib/labels";
@@ -119,7 +119,17 @@ export function OrderDetailSection({ id, backHref = "/orders", backLabel = "Kemb
 
       {/* Timeline */}
       <div className="rounded-xl border border-[#bcc9c6]/40 bg-white p-5">
-        <p className="text-sm font-semibold text-[#191c1e] mb-4">Riwayat Status</p>
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-sm font-semibold text-[#191c1e]">Riwayat Status</p>
+          <button
+            onClick={reload}
+            className="flex items-center gap-1 text-xs text-[#6d7a77] hover:text-[#00685f] transition-colors"
+            title="Segarkan status"
+          >
+            <RefreshCw size={12} />
+            Segarkan
+          </button>
+        </div>
         <OrderTimeline history={order.statusHistory} />
       </div>
     </div>
