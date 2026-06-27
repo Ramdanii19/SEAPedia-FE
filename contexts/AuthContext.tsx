@@ -10,6 +10,7 @@ import {
 import { Role } from "@/lib/enums";
 import apiClient from "@/services/apiClient";
 import { ApiResponse } from "@/types/common.types";
+import { SESSION_KEYS, clearStorageSession, getToken } from "@/lib/session";
 
 // TODO: pindah ke features/auth/types di Branch 1
 export type User = {
@@ -46,20 +47,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   function setSession(user: User, token: string) {
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem(SESSION_KEYS.TOKEN, token);
+    localStorage.setItem(SESSION_KEYS.USER, JSON.stringify(user));
     setUser(user);
   }
 
   function clearSession() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    clearStorageSession();
     setUser(null);
     setActiveRole(null);
   }
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = getToken();
     if (token) {
       refreshMe().finally(() => setIsLoading(false));
     } else {
