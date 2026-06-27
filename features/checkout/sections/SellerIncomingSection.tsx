@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { ClipboardList } from "lucide-react";
 import { formatRupiah } from "@/utils/formatRupiah";
 import { formatDate } from "@/utils/formatDate";
@@ -67,9 +68,12 @@ export function SellerIncomingSection() {
               className="border-b border-[#bcc9c6]/30 last:border-0 hover:bg-[#f8f9fb] transition-colors"
             >
               <td className="py-3 px-4">
-                <span className="text-xs font-mono text-[#6d7a77]">
+                <Link
+                  href={`/seller/orders/${order.id}`}
+                  className="text-xs font-mono text-[#00685f] hover:underline"
+                >
                   #{order.id.slice(-8).toUpperCase()}
-                </span>
+                </Link>
               </td>
               <td className="py-3 px-4 text-sm text-[#3d4947]">
                 {/* buyer name not always in payload — fallback */}

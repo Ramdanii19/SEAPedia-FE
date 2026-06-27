@@ -10,10 +10,15 @@ import { OrderStatusBadge } from "../components/OrderStatusBadge";
 import { OrderTimeline } from "../components/OrderTimeline";
 import { useOrderDetail } from "../hooks/useOrderDetail";
 
-type Props = { id: string };
+type Props = {
+  id: string;
+  backHref?: string;
+  backLabel?: string;
+  headerSlot?: (order: import("../types/order.types").Order, reload: () => void) => React.ReactNode;
+};
 
-export function OrderDetailSection({ id }: Props) {
-  const { order, isLoading, error } = useOrderDetail(id);
+export function OrderDetailSection({ id, backHref = "/orders", backLabel = "Kembali", headerSlot }: Props) {
+  const { order, isLoading, error, reload } = useOrderDetail(id);
 
   if (isLoading) {
     return (
@@ -36,14 +41,17 @@ export function OrderDetailSection({ id }: Props) {
 
   return (
     <div className="flex flex-col gap-6 max-w-2xl">
-      {/* Back */}
-      <Link
-        href="/orders"
-        className="flex items-center gap-1.5 text-sm text-[#6d7a77] hover:text-[#191c1e] w-fit"
-      >
-        <ArrowLeft size={14} />
-        Kembali
-      </Link>
+      {/* Back + optional header action */}
+      <div className="flex items-center justify-between gap-3">
+        <Link
+          href={backHref}
+          className="flex items-center gap-1.5 text-sm text-[#6d7a77] hover:text-[#191c1e]"
+        >
+          <ArrowLeft size={14} />
+          {backLabel}
+        </Link>
+        {order && headerSlot?.(order, reload)}
+      </div>
 
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
