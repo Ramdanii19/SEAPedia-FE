@@ -1,13 +1,15 @@
 "use client";
 
+import Link from "next/link";
 import { ClipboardList } from "lucide-react";
 import { formatRupiah } from "@/utils/formatRupiah";
 import { formatDate } from "@/utils/formatDate";
 import { OrderStatusBadge } from "../components/OrderStatusBadge";
+import { ProcessOrderButton } from "../components/ProcessOrderButton";
 import { useSellerIncoming } from "../hooks/useSellerIncoming";
 
 export function SellerIncomingSection() {
-  const { orders, isLoading } = useSellerIncoming();
+  const { orders, isLoading, reload } = useSellerIncoming();
 
   if (isLoading) {
     return (
@@ -56,6 +58,7 @@ export function SellerIncomingSection() {
             <th className="py-3 px-4 text-left text-xs font-semibold text-[#6d7a77] uppercase tracking-wide">
               Status
             </th>
+            <th className="py-3 px-4" />
           </tr>
         </thead>
         <tbody>
@@ -65,9 +68,12 @@ export function SellerIncomingSection() {
               className="border-b border-[#bcc9c6]/30 last:border-0 hover:bg-[#f8f9fb] transition-colors"
             >
               <td className="py-3 px-4">
-                <span className="text-xs font-mono text-[#6d7a77]">
+                <Link
+                  href={`/seller/orders/${order.id}`}
+                  className="text-xs font-mono text-[#00685f] hover:underline"
+                >
                   #{order.id.slice(-8).toUpperCase()}
-                </span>
+                </Link>
               </td>
               <td className="py-3 px-4 text-sm text-[#3d4947]">
                 {/* buyer name not always in payload — fallback */}
@@ -95,6 +101,13 @@ export function SellerIncomingSection() {
               </td>
               <td className="py-3 px-4">
                 <OrderStatusBadge status={order.status} />
+              </td>
+              <td className="py-3 px-4 text-right">
+                <ProcessOrderButton
+                  orderId={order.id}
+                  status={order.status}
+                  onProcessed={reload}
+                />
               </td>
             </tr>
           ))}
