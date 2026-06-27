@@ -9,6 +9,7 @@ import {
   AdminPromo,
   AdminDeliveryJob,
 } from "../types/admin.types";
+import { VoucherFormValues, PromoFormValues } from "../schema/discount.schema";
 
 const adminService = {
   getUsers: () =>
@@ -34,6 +35,18 @@ const adminService = {
 
   getOverdueOrders: () =>
     apiClient.get<ApiResponse<AdminOrder[]>>("/admin/orders/overdue"),
+
+  createVoucher: (payload: VoucherFormValues) =>
+    apiClient.post<ApiResponse<AdminVoucher>>("/admin/vouchers", payload),
+
+  createPromo: (payload: PromoFormValues) =>
+    apiClient.post<ApiResponse<AdminPromo>>("/admin/promos", payload),
+
+  simulateNextDay: () =>
+    apiClient.post<ApiResponse<{ message: string }>>("/admin/simulate/next-day", {}),
+
+  processLateOrders: () =>
+    apiClient.post<ApiResponse<{ message: string }>>("/admin/process-late-orders", {}),
 };
 
 export default adminService;
