@@ -164,41 +164,6 @@ export function DriverDashboardSection() {
         </div>
       </div>
 
-      {/* Active job highlight */}
-      {data.activeJob && (
-        <div className="rounded-xl border border-[#00685f]/30 bg-white overflow-hidden">
-          <div className="px-5 py-3 border-b border-[#bcc9c6]/30 flex items-center justify-between">
-            <p className="text-sm font-semibold text-[#191c1e]">Job Aktif Sekarang</p>
-            <span className="inline-flex items-center gap-1 rounded-full bg-[#fff3e0] px-2.5 py-0.5 text-[11px] font-semibold text-[#e65100]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#e65100] animate-pulse" />
-              Sedang Berjalan
-            </span>
-          </div>
-          <Link
-            href={`/driver/jobs/${data.activeJob.id}`}
-            className="flex items-center gap-4 px-5 py-4 hover:bg-[#f8f9fb] transition-colors"
-          >
-            <div className="w-10 h-10 rounded-full bg-[#e8f4f3] flex items-center justify-center shrink-0">
-              <Truck size={18} className="text-[#00685f]" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-[#191c1e] truncate">
-                {(data.activeJob.order as any)?.store?.storeName ?? "—"}
-              </p>
-              <p className="text-xs text-[#6d7a77] mt-0.5 truncate">
-                {(data.activeJob.order as any)?.shippingAddress ?? ""}
-              </p>
-            </div>
-            <div className="flex items-center gap-2 shrink-0">
-              <span className="text-sm font-bold text-[#00685f]">
-                {formatRupiah(data.activeJob.earning)}
-              </span>
-              <ChevronRight size={16} className="text-[#bcc9c6]" />
-            </div>
-          </Link>
-        </div>
-      )}
-
       {/* Riwayat Pengiriman */}
       <div className="rounded-xl border border-[#bcc9c6]/40 bg-white overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4 border-b border-[#bcc9c6]/30">
@@ -244,7 +209,7 @@ export function DriverDashboardSection() {
             <tbody>
               {recent5.map((job) => (
                 <tr
-                  key={job.id}
+                  key={job._id}
                   className="border-b border-[#bcc9c6]/30 last:border-0 hover:bg-[#f8f9fb] transition-colors"
                 >
                   <td className="py-3 px-4">

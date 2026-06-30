@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import deliveryService from "../service/delivery.service";
 import { DriverDashboard } from "../types/delivery.types";
 
@@ -9,13 +9,19 @@ export function useDriverDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    deliveryService
-      .getDashboard()
-      .then((res) => setData((res as any).data ?? res))
-      .catch((err) => setError(err?.message ?? "Gagal memuat dashboard"))
-      .finally(() => setIsLoading(false));
+  const load = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const res = await deliveryService.getDashboard();
+      setData((res as any).data ?? res);
+    } catch (err: any) {
+      setError(err?.message ?? "Gagal memuat dashboard");
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
-  return { data, isLoading, error };
+  useEffect(() => { load(); }, [load]);
+
+  return { data, isLoading, error, reload: load };
 }

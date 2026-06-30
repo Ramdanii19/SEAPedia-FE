@@ -14,7 +14,8 @@ export function useJobDetail(id: string) {
     setError(null);
     try {
       const res = await deliveryService.getJob(id);
-      setJob(res.data);
+      const d = (res as any).data ?? res;
+      setJob(d?.job ?? d);
     } catch (err: any) {
       setError(err?.message ?? "Gagal memuat detail job");
     } finally {

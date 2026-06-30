@@ -3,7 +3,7 @@ import { Order } from "@/features/checkout/types/order.types";
 export type DeliveryJobStatus = "AVAILABLE" | "TAKEN" | "COMPLETED";
 
 export type DeliveryJob = {
-  id: string;
+  _id: string;
   order: Order;
   status: DeliveryJobStatus;
   earning: number;

@@ -54,7 +54,7 @@ export function AvailableJobsSection() {
   return (
     <div className="flex flex-col gap-3">
       {jobs.map((job) => (
-        <JobCard key={job.id} job={job} onTake={handleTake} />
+        <JobCard key={job._id} job={job} onTake={handleTake} />
       ))}
     </div>
   );
