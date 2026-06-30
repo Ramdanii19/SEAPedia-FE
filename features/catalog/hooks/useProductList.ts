@@ -64,6 +64,12 @@ export function useProductList() {
     setPage(1);
   }
 
+  const setSearch = useCallback((value: string) => {
+    setFilters((f) => ({ ...f, search: value }));
+    setPending((p) => ({ ...p, search: value }));
+    setPage(1);
+  }, []);
+
   const totalPages = Math.max(1, Math.ceil(total / LIMIT));
   const from = total === 0 ? 0 : (page - 1) * LIMIT + 1;
   const to = Math.min(page * LIMIT, total);
@@ -77,8 +83,10 @@ export function useProductList() {
     totalPages,
     from,
     to,
+    filters,
     pending,
     setPending,
     applyFilters,
+    setSearch,
   };
 }

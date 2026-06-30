@@ -1,18 +1,9 @@
 "use client";
 
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
+import { useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight, Search, X } from "lucide-react";
 import { ProductGrid } from "../components/ProductGrid";
 import { useProductList } from "../hooks/useProductList";
-
-const CATEGORIES = ["Elektronik", "Pakaian", "Kerajinan", "Makanan"];
-
-const SORT_OPTIONS = [
-  { value: "newest",     label: "Terbaru" },
-  { value: "price_asc",  label: "Harga Terendah" },
-  { value: "price_desc", label: "Harga Tertinggi" },
-  { value: "popular",    label: "Terlaris" },
-];
 
 function Pagination({
   page,
@@ -49,10 +40,7 @@ function Pagination({
 
       {pages.map((p, i) =>
         p === "..." ? (
-          <span
-            key={`el-${i}`}
-            className="flex h-9 w-9 items-center justify-center text-sm text-[#6d7a77]"
-          >
+          <span key={`el-${i}`} className="flex h-9 w-9 items-center justify-center text-sm text-[#6d7a77]">
             ...
           </span>
         ) : (
@@ -91,117 +79,76 @@ export function ProductListSection() {
     totalPages,
     from,
     to,
-    pending,
-    setPending,
-    applyFilters,
+    filters,
+    setSearch,
   } = useProductList();
 
-  function toggleCategory(cat: string) {
-    setPending((prev) => ({
-      ...prev,
-      categories: prev.categories.includes(cat)
-        ? prev.categories.filter((c) => c !== cat)
-        : [...prev.categories, cat],
-    }));
+  const [inputValue, setInputValue] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearch(inputValue.trim());
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [inputValue, setSearch]);
+
+  function clearSearch() {
+    setInputValue("");
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-10 py-8 flex gap-8">
-      {/* Filter sidebar — desktop only */}
-      <aside className="hidden md:flex flex-col gap-6 w-52 shrink-0">
-        {/* Kategori */}
-        <div>
-          <p className="text-sm font-semibold text-[#191c1e] mb-3">Kategori</p>
-          <div className="flex flex-col gap-2.5">
-            {CATEGORIES.map((cat) => (
-              <label key={cat} className="flex items-center gap-2.5 cursor-pointer">
-                <Checkbox
-                  checked={pending.categories.includes(cat)}
-                  onCheckedChange={() => toggleCategory(cat)}
-                />
-                <span className="text-sm text-[#3d4947]">{cat}</span>
-              </label>
-            ))}
+    <div className="max-w-7xl mx-auto px-4 md:px-10 py-8">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-[#191c1e]">Katalog Produk</h1>
+        <p className="text-sm text-[#6d7a77] mt-1">
+          Menampilkan produk kerajinan dan komoditas terbaik Nusantara.
+        </p>
+
+        {/* Search bar */}
+        <div className="mt-5 max-w-xl">
+          <div className="relative">
+            <Search
+              size={16}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6d7a77] pointer-events-none"
+            />
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder="Cari produk..."
+              className="w-full rounded-lg border border-[#bcc9c6] py-2.5 pl-9 pr-9 text-sm text-[#191c1e] placeholder:text-[#6d7a77] focus:border-[#00685f] focus:outline-none transition-colors"
+            />
+            {inputValue && (
+              <button
+                onClick={clearSearch}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6d7a77] hover:text-[#191c1e] transition-colors"
+              >
+                <X size={14} />
+              </button>
+            )}
           </div>
         </div>
 
-        {/* Rentang Harga */}
-        <div>
-          <p className="text-sm font-semibold text-[#191c1e] mb-3">Rentang Harga</p>
-          <div className="flex flex-col gap-2">
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-[#6d7a77]">Rp</span>
-              <input
-                type="number"
-                placeholder="Min"
-                value={pending.minPrice}
-                onChange={(e) => setPending((p) => ({ ...p, minPrice: e.target.value }))}
-                className="w-full rounded-lg border border-[#bcc9c6] py-2 pl-8 pr-3 text-sm focus:border-[#00685f]/40 focus:outline-none"
-              />
-            </div>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-[#6d7a77]">Rp</span>
-              <input
-                type="number"
-                placeholder="Maks"
-                value={pending.maxPrice}
-                onChange={(e) => setPending((p) => ({ ...p, maxPrice: e.target.value }))}
-                className="w-full rounded-lg border border-[#bcc9c6] py-2 pl-8 pr-3 text-sm focus:border-[#00685f]/40 focus:outline-none"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Urutkan */}
-        <div>
-          <p className="text-sm font-semibold text-[#191c1e] mb-3">Urutkan</p>
-          <select
-            value={pending.sort}
-            onChange={(e) => setPending((p) => ({ ...p, sort: e.target.value }))}
-            className="w-full rounded-lg border border-[#bcc9c6] py-2 px-3 text-sm text-[#3d4947] focus:border-[#00685f]/40 focus:outline-none bg-white"
-          >
-            {SORT_OPTIONS.map(({ value, label }) => (
-              <option key={value} value={value}>{label}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Apply button */}
-        <button
-          onClick={applyFilters}
-          className="w-full rounded-lg bg-[#00685f] py-2.5 text-sm font-semibold text-white hover:bg-[#005049] transition-colors"
-        >
-          Terapkan Filter
-        </button>
-      </aside>
-
-      {/* Main content */}
-      <div className="flex-1 min-w-0">
-        {/* Header */}
-        <div className="flex items-start justify-between mb-6 gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-[#191c1e]">Katalog Produk</h1>
-            <p className="text-sm text-[#6d7a77] mt-1">
-              Menampilkan produk kerajinan dan komoditas terbaik Nusantara.
-            </p>
-          </div>
-          {total > 0 && !isLoading && (
-            <p className="text-sm text-[#6d7a77] shrink-0 mt-1">
-              Menampilkan {from}–{to} dari {total}
-            </p>
-          )}
-        </div>
-
-        <ProductGrid products={products} isLoading={isLoading} />
-
-        {totalPages > 1 && (
-          <Pagination
-            page={page}
-            totalPages={totalPages}
-            onPageChange={setPage}
-          />
+        {/* Result info */}
+        {!isLoading && total > 0 && (
+          <p className="text-xs text-[#6d7a77] mt-3">
+            Menampilkan {from}–{to} dari {total} produk
+            {filters.search ? ` untuk "${filters.search}"` : ""}
+          </p>
+        )}
+        {!isLoading && total === 0 && filters.search && (
+          <p className="text-xs text-[#6d7a77] mt-3">
+            Tidak ada produk yang cocok dengan &ldquo;{filters.search}&rdquo;.
+          </p>
         )}
       </div>
+
+      <ProductGrid products={products} isLoading={isLoading} />
+
+      {totalPages > 1 && (
+        <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+      )}
     </div>
   );
 }
