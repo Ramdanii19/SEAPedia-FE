@@ -40,11 +40,12 @@ export function Navbar() {
 
         {/* Desktop — tengah */}
         <div className="hidden md:flex items-center gap-6">
-          {user && (
-            <Link href={dashboardHref} className="text-sm font-semibold text-[#00685f] hover:text-[#005049] transition-colors">
-              Dashboard
-            </Link>
-          )}
+          <Link
+            href={user ? dashboardHref : "/"}
+            className="text-sm font-semibold text-[#00685f] hover:text-[#005049] transition-colors"
+          >
+            Dashboard
+          </Link>
           <Link href="/products" className="text-sm text-[#3d4947] hover:text-[#00685f] transition-colors">
             Katalog
           </Link>
@@ -134,6 +135,7 @@ export function Navbar() {
             </>
           ) : (
             <>
+              <Link href="/" onClick={() => setMobileOpen(false)} className="text-sm font-semibold text-[#00685f] py-1">Dashboard</Link>
               <Link href="/products" onClick={() => setMobileOpen(false)} className="text-sm text-[#3d4947] py-1">Katalog</Link>
               <div className="border-t border-[#bcc9c6]/30 pt-3 flex flex-col gap-2">
                 <Link href="/login" onClick={() => setMobileOpen(false)} className="text-sm font-medium text-center py-2 border border-[#bcc9c6] rounded-lg text-[#3d4947]">Masuk</Link>
