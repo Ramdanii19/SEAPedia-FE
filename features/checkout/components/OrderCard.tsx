@@ -10,7 +10,7 @@ type Props = { order: Order };
 export function OrderCard({ order }: Props) {
   return (
     <Link
-      href={`/orders/${order.id}`}
+      href={`/orders/${order._id}`}
       className="block rounded-xl border border-[#bcc9c6]/40 bg-white p-4 hover:border-[#00685f]/40 transition-colors"
     >
       <div className="flex items-start justify-between gap-3 mb-3">

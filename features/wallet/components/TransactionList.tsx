@@ -41,7 +41,7 @@ export function TransactionList({ transactions }: Props) {
         const typeKey = tx.type.toLowerCase();
         const isCredit = typeKey === "topup" || typeKey === "earning" || typeKey === "refund";
         return (
-          <li key={tx.id} className="flex items-center justify-between py-3 gap-3">
+          <li key={tx._id} className="flex items-center justify-between py-3 gap-3">
             <div className="flex items-center gap-3 min-w-0">
               <span
                 className={`shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase ${

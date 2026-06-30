@@ -88,11 +88,14 @@ export function TopupModal({ open, onClose, onSubmit }: Props) {
               name="amount"
               render={({ field }) => (
                 <Input
-                  type="number"
-                  min={1}
-                  placeholder="Contoh: 75000"
-                  value={field.value || ""}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="Contoh: 75.000"
+                  value={field.value ? field.value.toLocaleString("id-ID") : ""}
+                  onChange={(e) => {
+                    const raw = e.target.value.replace(/[^0-9]/g, "");
+                    field.onChange(raw === "" ? 0 : Number(raw));
+                  }}
                 />
               )}
             />

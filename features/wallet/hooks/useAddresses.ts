@@ -13,8 +13,7 @@ export function useAddresses() {
     setIsLoading(true);
     try {
       const res = await addressService.listAddresses();
-      const data = res.data as any;
-      setAddresses(Array.isArray(data) ? data : data?.addresses ?? []);
+      setAddresses(res.data.addresses ?? []);
     } catch {
       setAddresses([]);
     } finally {

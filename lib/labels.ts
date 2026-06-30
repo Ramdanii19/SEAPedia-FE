@@ -12,6 +12,7 @@ export const ORDER_STATUS_LABEL: Record<OrderStatus, string> = {
 };
 
 export const DELIVERY_METHOD_LABEL: Record<DeliveryMethod, string> = {
-  pickup: "Ambil Sendiri",
-  delivery: "Diantar",
+  INSTANT: "Seapedia Express – Sameday",
+  NEXT_DAY: "Seapedia Express – Next Day",
+  REGULAR: "Seapedia Express – Regular",
 };

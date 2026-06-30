@@ -19,9 +19,8 @@ export function useWallet() {
         walletService.getWallet(),
         walletService.getTransactions(),
       ]);
-      setWallet(walletRes.data);
-      const txData = txRes.data as any;
-      setTransactions(Array.isArray(txData) ? txData : txData?.transactions ?? []);
+      setWallet(walletRes.data.wallet);
+      setTransactions(txRes.data.transactions ?? []);
     } catch {
       setError("Gagal memuat data dompet");
     } finally {

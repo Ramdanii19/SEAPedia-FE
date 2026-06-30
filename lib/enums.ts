@@ -21,8 +21,9 @@ export const ORDER_STATUS = {
 export type OrderStatus = (typeof ORDER_STATUS)[keyof typeof ORDER_STATUS];
 
 export const DELIVERY_METHOD = {
-  PICKUP: "pickup",
-  DELIVERY: "delivery",
+  INSTANT: "INSTANT",
+  NEXT_DAY: "NEXT_DAY",
+  REGULAR: "REGULAR",
 } as const;
 
 export type DeliveryMethod = (typeof DELIVERY_METHOD)[keyof typeof DELIVERY_METHOD];

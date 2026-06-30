@@ -43,7 +43,7 @@ export function AddressSection() {
 
   async function handleFormSubmit(values: AddressFormValues) {
     if (editTarget) {
-      await updateAddress(editTarget.id, values);
+      await updateAddress(editTarget._id, values);
     } else {
       await createAddress(values);
     }
@@ -54,7 +54,7 @@ export function AddressSection() {
     if (!deleteTarget) return;
     setIsDeleting(true);
     try {
-      await deleteAddress(deleteTarget.id);
+      await deleteAddress(deleteTarget._id);
       setDeleteTarget(null);
     } finally {
       setIsDeleting(false);
@@ -94,11 +94,11 @@ export function AddressSection() {
           <div className="flex flex-col gap-3">
             {addresses.map((addr) => (
               <AddressCard
-                key={addr.id}
+                key={addr._id}
                 address={addr}
                 onEdit={openEdit}
                 onDelete={(id) =>
-                  setDeleteTarget(addresses.find((a) => a.id === id) ?? null)
+                  setDeleteTarget(addresses.find((a) => a._id === id) ?? null)
                 }
               />
             ))}

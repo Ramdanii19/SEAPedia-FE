@@ -4,8 +4,7 @@ type Props = { id: string };
 
 export function OrderDetailView({ id }: Props) {
   return (
-    <main className="p-6">
-      <h1 className="text-xl font-bold text-[#191c1e] mb-6">Detail Pesanan</h1>
+    <main className="px-4 py-6 max-w-5xl mx-auto">
       <OrderDetailSection id={id} />
     </main>
   );

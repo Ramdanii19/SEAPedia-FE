@@ -72,7 +72,7 @@ export function AddressCard({
             variant="outline"
             size="sm"
             className="gap-1.5 border-[#cc4636]/40 text-[#cc4636] hover:bg-[#cc4636]/5"
-            onClick={(e) => { e.stopPropagation(); onDelete(address.id); }}
+            onClick={(e) => { e.stopPropagation(); onDelete(address._id); }}
           >
             <Trash2 size={13} />
             Hapus

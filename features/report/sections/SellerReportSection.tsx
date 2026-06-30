@@ -69,11 +69,11 @@ export function SellerReportSection() {
             <tbody>
               {data.orders.map((order) => (
                 <tr
-                  key={order.id}
+                  key={order._id}
                   className="border-b border-[#bcc9c6]/30 last:border-0 hover:bg-[#f8f9fb] transition-colors"
                 >
                   <td className="py-3 px-4 text-xs font-mono text-[#6d7a77]">
-                    #{order.id.slice(-8).toUpperCase()}
+                    #{order._id.slice(-8).toUpperCase()}
                   </td>
                   <td className="py-3 px-4 text-xs text-[#6d7a77]">
                     {formatDate(order.createdAt)}

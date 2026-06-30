@@ -5,13 +5,13 @@ import { TopupFormValues } from "../schema/wallet.schema";
 
 const walletService = {
   getWallet: () =>
-    apiClient.get<ApiResponse<Wallet>>("/wallet"),
+    apiClient.get<ApiResponse<{ wallet: Wallet }>>("/wallet"),
 
   topUp: (payload: TopupFormValues) =>
-    apiClient.post<ApiResponse<Wallet>>("/wallet/topup", payload),
+    apiClient.post<ApiResponse<{ wallet: Wallet }>>("/wallet/topup", payload),
 
   getTransactions: () =>
-    apiClient.get<ApiResponse<WalletTransaction[]>>("/wallet/transactions"),
+    apiClient.get<ApiResponse<{ transactions: WalletTransaction[]; pagination: unknown }>>("/wallet/transactions"),
 };
 
 export default walletService;
