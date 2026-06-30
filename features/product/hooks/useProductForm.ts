@@ -5,9 +5,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import productService from "../service/product.service";
 import { productSchema, ProductFormValues } from "../schema/product.schema";
+import apiClient from "@/services/apiClient";
+import { ApiResponse } from "@/types/common.types";
 
 type Options = {
-  productId?: number;
+  productId?: string;
   defaultValues?: Partial<ProductFormValues>;
   onSuccess: () => void;
 };
@@ -15,6 +17,10 @@ type Options = {
 export function useProductForm({ productId, defaultValues, onSuccess }: Options) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    defaultValues?.imageUrl ?? null
+  );
 
   const isEdit = productId !== undefined;
 
@@ -23,30 +29,47 @@ export function useProductForm({ productId, defaultValues, onSuccess }: Options)
     defaultValues: {
       name: "",
       description: "",
-      price: 0,
-      stock: 0,
+      price: undefined as unknown as number,
+      stock: undefined as unknown as number,
       imageUrl: "",
       ...defaultValues,
     },
   });
 
+  function onFileChange(file: File | null) {
+    setImageFile(file);
+    if (file) {
+      setImagePreview(URL.createObjectURL(file));
+    } else {
+      setImagePreview(defaultValues?.imageUrl ?? null);
+    }
+  }
+
   async function onSubmit(values: ProductFormValues) {
     setIsSubmitting(true);
     setError(null);
 
-    // send undefined for empty imageUrl so backend ignores it
-    const payload: ProductFormValues = {
-      ...values,
-      imageUrl: values.imageUrl || undefined,
-    };
-
     try {
+      let imageUrl = values.imageUrl || undefined;
+
+      if (imageFile) {
+        const fd = new FormData();
+        fd.append("file", imageFile);
+        const res = await apiClient.upload<ApiResponse<{ url: string }>>("/upload", fd);
+        imageUrl = res.data.url;
+      }
+
+      const { imageUrl: _ignored, ...rest } = values;
+      const payload: ProductFormValues = { ...rest, ...(imageUrl ? { imageUrl } : {}) };
+
       if (isEdit) {
         await productService.updateProduct(productId, payload);
       } else {
         await productService.createProduct(payload);
       }
       form.reset();
+      setImageFile(null);
+      setImagePreview(null);
       onSuccess();
     } catch (err: any) {
       setError(err?.message ?? "Gagal menyimpan produk");
@@ -60,6 +83,9 @@ export function useProductForm({ productId, defaultValues, onSuccess }: Options)
     isSubmitting,
     error,
     isEdit,
+    imageFile,
+    imagePreview,
+    onFileChange,
     onSubmit: form.handleSubmit(onSubmit),
   };
 }

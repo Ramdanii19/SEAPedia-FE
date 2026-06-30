@@ -14,7 +14,7 @@ export function SellerOrderDetailSection({ id }: Props) {
       backLabel="Kembali ke Pesanan Masuk"
       headerSlot={(order: Order, reload) => (
         <ProcessOrderButton
-          orderId={order.id}
+          orderId={order._id}
           status={order.status}
           onProcessed={reload}
         />

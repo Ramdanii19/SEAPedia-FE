@@ -17,10 +17,10 @@ const productService = {
   createProduct: (payload: ProductFormValues) =>
     apiClient.post<ApiResponse<Product>>("/products", payload),
 
-  updateProduct: (id: number, payload: Partial<ProductFormValues>) =>
+  updateProduct: (id: string, payload: Partial<ProductFormValues>) =>
     apiClient.patch<ApiResponse<Product>>(`/products/${id}`, payload),
 
-  deleteProduct: (id: number) =>
+  deleteProduct: (id: string) =>
     apiClient.delete<ApiResponse<null>>(`/products/${id}`),
 };
 

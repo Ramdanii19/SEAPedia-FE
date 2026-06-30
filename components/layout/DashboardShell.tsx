@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, ReactNode } from "react";
+import { useState, useRef, useEffect, ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Bell, Search } from "lucide-react";
+import { Menu, X, User, RefreshCw, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLogout } from "@/features/auth/hooks/useLogout";
 import { RoleBadge } from "@/features/auth/components/RoleBadge";
 import { Role } from "@/features/auth/types/auth.types";
 
@@ -12,6 +13,7 @@ export type DashboardMenuItem = {
   label: string;
   href: string;
   icon?: ReactNode;
+  exact?: boolean;
 };
 
 type SidebarNavProps = {
@@ -24,9 +26,10 @@ function SidebarNav({ menu, pathname, onNavigate }: SidebarNavProps) {
   return (
     <div className="flex flex-col h-full">
       <nav className="flex-1 px-3 py-4 flex flex-col gap-0.5">
-        {menu.map(({ label, href, icon }) => {
+        {menu.map(({ label, href, icon, exact }) => {
           const isActive =
-            pathname === href || (href !== "/" && pathname.startsWith(href));
+            pathname === href ||
+            (!exact && href !== "/" && pathname.startsWith(href + "/"));
           return (
             <Link
               key={href + label}
@@ -51,18 +54,6 @@ function SidebarNav({ menu, pathname, onNavigate }: SidebarNavProps) {
         })}
       </nav>
 
-      {/* Help card */}
-      <div className="mx-3 mb-4 rounded-xl bg-[#f0f5f4] p-3">
-        <p className="mb-1 text-[9px] font-bold uppercase tracking-wider text-[#6d7a77]">
-          Pusat Bantuan
-        </p>
-        <p className="mb-3 text-[11px] leading-relaxed text-[#6d7a77]">
-          Butuh bantuan mengelola akun Anda?
-        </p>
-        <button className="w-full rounded-lg bg-[#00685f] py-2 text-xs font-semibold text-white transition-colors hover:bg-[#005049]">
-          Hubungi CS
-        </button>
-      </div>
     </div>
   );
 }
@@ -74,12 +65,25 @@ type Props = {
 
 export function DashboardShell({ menu, children }: Props) {
   const { user, activeRole } = useAuth();
+  const { logout, isLoggingOut } = useLogout();
   const pathname = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
 
   const role = activeRole as unknown as Role | null;
   const displayName = (user as any)?.fullName ?? user?.name ?? "U";
   const initial = displayName[0]?.toUpperCase() ?? "U";
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setProfileOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <div className="flex min-h-screen flex-col bg-[#f8f9fb]">
@@ -94,39 +98,58 @@ export function DashboardShell({ menu, children }: Props) {
           <Menu size={20} />
         </button>
 
-        {/* Logo + role badge */}
-        <div className="flex shrink-0 items-center gap-2.5">
-          <Link
-            href="/"
-            className="text-lg font-bold tracking-tighter text-[#00685f]"
-          >
-            SEAPEDIA
-          </Link>
-          {role && <RoleBadge role={role} active />}
-        </div>
-
-        {/* Search — desktop */}
-        <div className="mx-4 hidden max-w-md flex-1 md:block">
-          <div className="relative">
-            <Search
-              size={14}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6d7a77]"
-            />
-            <input
-              type="text"
-              placeholder="Cari pesanan atau produk..."
-              className="w-full rounded-lg border border-transparent bg-[#f2f4f6] py-2 pl-8 pr-4 text-sm transition-colors focus:border-[#00685f]/40 focus:bg-white focus:outline-none"
-            />
-          </div>
-        </div>
+        {/* Logo */}
+        <Link href="/" className="shrink-0 text-lg font-bold tracking-tighter text-[#00685f]">
+          SEAPEDIA
+        </Link>
 
         {/* Right actions */}
-        <div className="ml-auto flex items-center gap-2">
-          <button className="rounded-lg p-2 text-[#3d4947] transition-colors hover:bg-[#f2f4f6]">
-            <Bell size={20} />
-          </button>
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#00685f] text-xs font-bold text-white">
-            {initial}
+        <div className="ml-auto flex items-center gap-2.5">
+          {role && <RoleBadge role={role} active />}
+
+          {/* Avatar dropdown */}
+          <div className="relative" ref={profileRef}>
+            <button
+              onClick={() => setProfileOpen((v) => !v)}
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#00685f] text-xs font-bold text-white hover:bg-[#005049] transition-colors"
+              aria-label="Menu profil"
+            >
+              {initial}
+            </button>
+
+            {profileOpen && (
+              <div className="absolute right-0 mt-2 w-52 bg-white rounded-xl border border-[#bcc9c6]/30 shadow-lg py-1 z-50">
+                <div className="px-4 py-2.5 border-b border-[#bcc9c6]/30">
+                  <p className="text-xs font-semibold text-[#191c1e] truncate">{displayName}</p>
+                  <p className="text-xs text-[#6d7a77] truncate">{user?.email}</p>
+                </div>
+                <Link
+                  href="/profile"
+                  onClick={() => setProfileOpen(false)}
+                  className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#191c1e] hover:bg-[#f2f4f6] transition-colors"
+                >
+                  <User size={15} className="text-[#6d7a77]" />
+                  Profil Saya
+                </Link>
+                <Link
+                  href="/select-role?switch=true"
+                  onClick={() => setProfileOpen(false)}
+                  className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#191c1e] hover:bg-[#f2f4f6] transition-colors"
+                >
+                  <RefreshCw size={15} className="text-[#6d7a77]" />
+                  Ganti Peran
+                </Link>
+                <div className="border-t border-[#bcc9c6]/30 my-1" />
+                <button
+                  onClick={() => { setProfileOpen(false); logout(); }}
+                  disabled={isLoggingOut}
+                  className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+                >
+                  <LogOut size={15} />
+                  {isLoggingOut ? "Keluar..." : "Keluar"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </header>

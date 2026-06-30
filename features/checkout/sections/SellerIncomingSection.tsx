@@ -64,20 +64,19 @@ export function SellerIncomingSection() {
         <tbody>
           {orders.map((order) => (
             <tr
-              key={order.id}
+              key={order._id}
               className="border-b border-[#bcc9c6]/30 last:border-0 hover:bg-[#f8f9fb] transition-colors"
             >
               <td className="py-3 px-4">
                 <Link
-                  href={`/seller/orders/${order.id}`}
+                  href={`/seller/orders/${order._id}`}
                   className="text-xs font-mono text-[#00685f] hover:underline"
                 >
-                  #{order.id.slice(-8).toUpperCase()}
+                  #{order._id.slice(-8).toUpperCase()}
                 </Link>
               </td>
               <td className="py-3 px-4 text-sm text-[#3d4947]">
-                {/* buyer name not always in payload — fallback */}
-                {(order as any).buyerName ?? "—"}
+                {(order as any).buyer?.fullName ?? "—"}
               </td>
               <td className="py-3 px-4">
                 <div className="flex flex-col gap-0.5">
@@ -104,7 +103,7 @@ export function SellerIncomingSection() {
               </td>
               <td className="py-3 px-4 text-right">
                 <ProcessOrderButton
-                  orderId={order.id}
+                  orderId={order._id}
                   status={order.status}
                   onProcessed={reload}
                 />

@@ -13,8 +13,7 @@ export function useAddresses() {
     setIsLoading(true);
     try {
       const res = await addressService.listAddresses();
-      const data = res.data as any;
-      setAddresses(Array.isArray(data) ? data : data?.addresses ?? []);
+      setAddresses(res.data.addresses ?? []);
     } catch {
       setAddresses([]);
     } finally {
@@ -41,5 +40,10 @@ export function useAddresses() {
     await load();
   }
 
-  return { addresses, isLoading, reload: load, createAddress, updateAddress, deleteAddress };
+  async function setDefault(id: string) {
+    await addressService.updateAddress(id, { isDefault: true });
+    await load();
+  }
+
+  return { addresses, isLoading, reload: load, createAddress, updateAddress, deleteAddress, setDefault };
 }

@@ -52,14 +52,11 @@ export function JobDetailSection({ id }: Props) {
   }
 
   const order = job.order;
-  const storeName = order.store?.storeName ?? "—";
-  const address = (order as any).address ?? (order as any).deliveryAddress ?? null;
-  const addressLine = address
-    ? [address.street, address.city, address.province].filter(Boolean).join(", ")
-    : "Alamat tidak tersedia";
+  const storeName = (order as any).store?.storeName ?? "—";
+  const addressLine = (order as any).shippingAddress ?? "Alamat tidak tersedia";
 
   return (
-    <div className="flex flex-col gap-6 max-w-2xl">
+    <div className="flex flex-col gap-6 w-full">
       {/* Back */}
       <Link
         href="/driver/jobs"
@@ -72,7 +69,7 @@ export function JobDetailSection({ id }: Props) {
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-xs text-[#6d7a77] mb-1">Job #{job.id.slice(-8).toUpperCase()}</p>
+          <p className="text-xs text-[#6d7a77] mb-1">Job #{job._id.slice(-8).toUpperCase()}</p>
           {job.takenAt && (
             <p className="text-xs text-[#6d7a77]">Diambil: {formatDate(job.takenAt)}</p>
           )}
@@ -122,7 +119,7 @@ export function JobDetailSection({ id }: Props) {
       {/* Timeline */}
       <div className="rounded-xl border border-[#bcc9c6]/40 bg-white p-5">
         <p className="text-sm font-semibold text-[#191c1e] mb-4">Riwayat Status</p>
-        <OrderTimeline history={order.statusHistory} />
+        <OrderTimeline history={order.statusHistory} currentStatus={order.status} />
       </div>
 
       {/* Action */}
@@ -140,7 +137,7 @@ export function JobDetailSection({ id }: Props) {
       )}
 
       {job.status === "TAKEN" && (
-        <CompleteJobButton jobId={job.id} onCompleted={reload} />
+        <CompleteJobButton jobId={job._id} onCompleted={reload} />
       )}
 
       {job.status === "COMPLETED" && job.completedAt && (

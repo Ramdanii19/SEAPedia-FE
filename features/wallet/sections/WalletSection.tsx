@@ -24,7 +24,7 @@ export function WalletSection() {
 
   return (
     <>
-      <div className="flex flex-col gap-6 max-w-lg">
+      <div className="flex flex-col gap-6 w-full">
         <BalanceCard
           balance={wallet?.balance ?? 0}
           onTopUp={() => setShowTopup(true)}

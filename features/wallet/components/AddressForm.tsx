@@ -26,6 +26,7 @@ export function AddressForm({ defaultValues, onSuccess, onCancel }: Props) {
   } = useForm<AddressFormValues>({
     resolver: zodResolver(addressSchema),
     defaultValues: {
+      label: "",
       recipientName: "",
       phone: "",
       addressDetail: "",
@@ -48,6 +49,18 @@ export function AddressForm({ defaultValues, onSuccess, onCancel }: Props) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+      {/* Label Alamat */}
+      <div className="flex flex-col gap-1.5">
+        <label className="text-sm font-medium text-[#191c1e]">
+          Label Alamat
+          <span className="text-[#6d7a77] font-normal ml-1">(opsional)</span>
+        </label>
+        <Input
+          placeholder="cth: Rumah, Kantor, Kos"
+          {...register("label")}
+        />
+      </div>
+
       {/* Nama Penerima */}
       <div className="flex flex-col gap-1.5">
         <label className="text-sm font-medium text-[#191c1e]">

@@ -12,7 +12,7 @@ export function useSellerRevenue() {
   useEffect(() => {
     reportService
       .getSellerRevenue()
-      .then((res) => setData(res.data))
+      .then((res) => setData((res as any).data ?? res))
       .catch((err) => setError(err?.message ?? "Gagal memuat laporan"))
       .finally(() => setIsLoading(false));
   }, []);

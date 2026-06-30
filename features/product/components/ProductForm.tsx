@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+import { Controller } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -7,20 +9,18 @@ import { useProductForm } from "../hooks/useProductForm";
 import { ProductFormValues } from "../schema/product.schema";
 
 type Props = {
-  productId?: number;
+  productId?: string;
   defaultValues?: Partial<ProductFormValues>;
   onSuccess: () => void;
 };
 
 export function ProductForm({ productId, defaultValues, onSuccess }: Props) {
-  const { form, isSubmitting, error, isEdit, onSubmit } = useProductForm({
-    productId,
-    defaultValues,
-    onSuccess,
-  });
+  const { form, isSubmitting, error, isEdit, imagePreview, onFileChange, onSubmit } =
+    useProductForm({ productId, defaultValues, onSuccess });
 
   const {
     register,
+    control,
     formState: { errors },
   } = form;
 
@@ -61,12 +61,22 @@ export function ProductForm({ productId, defaultValues, onSuccess }: Props) {
           <label className="text-sm font-medium text-[#191c1e]">
             Harga (Rp) <span className="text-[#cc4636]">*</span>
           </label>
-          <Input
-            type="number"
-            min={0}
-            placeholder="0"
-            {...register("price", { valueAsNumber: true })}
-            aria-invalid={!!errors.price}
+          <Controller
+            control={control}
+            name="price"
+            render={({ field }) => (
+              <Input
+                type="text"
+                inputMode="numeric"
+                placeholder="0"
+                value={field.value != null && !isNaN(field.value) ? field.value.toLocaleString("id-ID") : ""}
+                onChange={(e) => {
+                  const raw = e.target.value.replace(/[^0-9]/g, "");
+                  field.onChange(raw === "" ? undefined : Number(raw));
+                }}
+                aria-invalid={!!errors.price}
+              />
+            )}
           />
           {errors.price && (
             <p className="text-xs text-red-500">{errors.price.message}</p>
@@ -77,12 +87,22 @@ export function ProductForm({ productId, defaultValues, onSuccess }: Props) {
           <label className="text-sm font-medium text-[#191c1e]">
             Stok <span className="text-[#cc4636]">*</span>
           </label>
-          <Input
-            type="number"
-            min={0}
-            placeholder="0"
-            {...register("stock", { valueAsNumber: true })}
-            aria-invalid={!!errors.stock}
+          <Controller
+            control={control}
+            name="stock"
+            render={({ field }) => (
+              <Input
+                type="text"
+                inputMode="numeric"
+                placeholder="0"
+                value={field.value != null && !isNaN(field.value) ? field.value.toLocaleString("id-ID") : ""}
+                onChange={(e) => {
+                  const raw = e.target.value.replace(/[^0-9]/g, "");
+                  field.onChange(raw === "" ? undefined : Number(raw));
+                }}
+                aria-invalid={!!errors.stock}
+              />
+            )}
           />
           {errors.stock && (
             <p className="text-xs text-red-500">{errors.stock.message}</p>
@@ -90,19 +110,27 @@ export function ProductForm({ productId, defaultValues, onSuccess }: Props) {
         </div>
       </div>
 
-      {/* URL Gambar */}
+      {/* Upload Gambar */}
       <div className="flex flex-col gap-1.5">
         <label className="text-sm font-medium text-[#191c1e]">
-          URL Gambar
+          Foto Produk
         </label>
-        <Input
-          type="url"
-          placeholder="https://contoh.com/gambar.jpg"
-          {...register("imageUrl")}
-          aria-invalid={!!errors.imageUrl}
+        <input
+          type="file"
+          accept="image/*"
+          className="block w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-[#e6f2f1] file:text-[#00685f] hover:file:bg-[#ccebe8] cursor-pointer"
+          onChange={(e) => onFileChange(e.target.files?.[0] ?? null)}
         />
-        {errors.imageUrl && (
-          <p className="text-xs text-red-500">{errors.imageUrl.message}</p>
+        {imagePreview && (
+          <div className="relative mt-1 h-32 w-32 overflow-hidden rounded-lg border border-gray-200">
+            <Image
+              src={imagePreview}
+              alt="Preview gambar produk"
+              fill
+              className="object-cover"
+              unoptimized
+            />
+          </div>
         )}
       </div>
 

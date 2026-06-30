@@ -8,5 +8,4 @@ export type CartItem = {
 export type Cart = {
   store: Store | null;
   items: CartItem[];
-  subtotal: number;
 };

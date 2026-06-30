@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/features/cart";
 import { useAddresses } from "@/features/wallet";
@@ -10,8 +10,9 @@ import { Discount, discountService } from "@/features/discount";
 import checkoutService from "../service/checkout.service";
 
 const DELIVERY_FEE_ESTIMATE: Record<DeliveryMethod, number> = {
-  delivery: 15_000,
-  pickup: 0,
+  INSTANT: 25_000,
+  NEXT_DAY: 15_000,
+  REGULAR: 9_000,
 };
 
 function calcDiscount(discount: Discount | null, base: number): number {
@@ -29,8 +30,14 @@ export function useCheckout() {
   const { wallet, isLoading: walletLoading } = useWallet();
 
   const [selectedAddressId, setSelectedAddressId] = useState<string>("");
+
+  useEffect(() => {
+    if (addresses.length === 0 || selectedAddressId) return;
+    const def = addresses.find((a) => a.isDefault) ?? addresses[0];
+    if (def) setSelectedAddressId(def._id);
+  }, [addresses, selectedAddressId]);
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>(
-    DELIVERY_METHOD.DELIVERY
+    DELIVERY_METHOD.REGULAR
   );
 
   const [appliedVoucher, setAppliedVoucher] = useState<Discount | null>(null);
@@ -42,7 +49,7 @@ export function useCheckout() {
   const [error, setError] = useState<string | null>(null);
 
   // FE-side estimates (BE is source of truth on actual checkout)
-  const subtotal = cart?.subtotal ?? 0;
+  const subtotal = cart?.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0) ?? 0;
   const deliveryFee = DELIVERY_FEE_ESTIMATE[deliveryMethod];
   const voucherDiscount = calcDiscount(appliedVoucher, subtotal);
   const promoDiscount = calcDiscount(appliedPromo, subtotal);
@@ -109,8 +116,10 @@ export function useCheckout() {
         voucherCode: appliedVoucher?.code || undefined,
         promoCode: appliedPromo?.code || undefined,
       });
+      const d = res.data as any;
+      const orderId = d?.orderId ?? d?.order?._id ?? d?.order?.id ?? d?._id ?? d?.id;
       await clear();
-      router.push(`/orders/${res.data.id}`);
+      router.push(`/orders/${orderId}`);
     } catch (err: any) {
       const msg: string = err?.message ?? "";
       if (/saldo|balance|insufficient/i.test(msg)) {

@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { ProfileSection } from "@/features/auth/sections/ProfileSection";
+import { Navbar } from "@/components/layout/Navbar";
 
 export function ProfileView() {
   const router = useRouter();
@@ -22,6 +23,10 @@ export function ProfileView() {
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-[#bee5fd]/20 blur-[120px]" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-[#89f5e7]/20 blur-[120px]" />
+      </div>
+
+      <div className="relative z-20">
+        <Navbar />
       </div>
 
       <main className="relative z-10 flex-1 px-4 md:px-10 py-12">

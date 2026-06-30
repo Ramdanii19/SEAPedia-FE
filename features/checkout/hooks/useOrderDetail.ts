@@ -14,7 +14,7 @@ export function useOrderDetail(id: string) {
     setError(null);
     try {
       const res = await orderService.getOrder(id);
-      setOrder(res.data);
+      setOrder(res.data.order);
     } catch (err: any) {
       setError(err?.message ?? "Gagal memuat pesanan");
     } finally {

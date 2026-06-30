@@ -5,7 +5,7 @@ import { AddressFormValues } from "../schema/wallet.schema";
 
 const addressService = {
   listAddresses: () =>
-    apiClient.get<ApiResponse<Address[]>>("/addresses"),
+    apiClient.get<ApiResponse<{ addresses: Address[] }>>("/addresses"),
 
   createAddress: (payload: AddressFormValues) =>
     apiClient.post<ApiResponse<Address>>("/addresses", payload),

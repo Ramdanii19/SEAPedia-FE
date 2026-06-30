@@ -1,16 +1,81 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { User, Mail, RefreshCw } from "lucide-react";
+import { User, Mail, RefreshCw, Wallet, TrendingUp, Bike } from "lucide-react";
 import { useProfile } from "@/features/auth/hooks/useProfile";
 import { useAuth } from "@/contexts/AuthContext";
 import { RoleBadge } from "@/features/auth/components/RoleBadge";
-import { FinancialSummaryCard } from "@/features/auth/components/FinancialSummaryCard";
 import { Role } from "@/features/auth/types/auth.types";
+import { formatRupiah } from "@/utils/formatRupiah";
+import walletService from "@/features/wallet/service/wallet.service";
+import reportService from "@/features/report/service/report.service";
+import deliveryService from "@/features/delivery/service/delivery.service";
+
+function FinancialCard({
+  label,
+  value,
+  icon: Icon,
+  iconBg,
+  iconColor,
+}: {
+  label: string;
+  value: number | null;
+  icon: React.ElementType;
+  iconBg: string;
+  iconColor: string;
+}) {
+  return (
+    <div className="flex items-center gap-4 p-4 rounded-xl border border-[#bcc9c6]/30 bg-white shadow-sm">
+      <div className={`w-10 h-10 rounded-full ${iconBg} flex items-center justify-center shrink-0`}>
+        <Icon size={18} className={iconColor} />
+      </div>
+      <div className="min-w-0">
+        <p className="text-xs text-[#6d7a77]">{label}</p>
+        <p className="text-base font-semibold text-[#191c1e]">
+          {value === null ? "Memuat..." : formatRupiah(value)}
+        </p>
+      </div>
+    </div>
+  );
+}
 
 export function ProfileSection() {
   const { user, isLoading } = useProfile();
   const { activeRole } = useAuth();
+
+  const [walletBalance, setWalletBalance] = useState<number | null>(null);
+  const [sellerRevenue, setSellerRevenue] = useState<number | null>(null);
+  const [driverEarning, setDriverEarning] = useState<number | null>(null);
+
+  useEffect(() => {
+    walletService.getWallet()
+      .then((res) => {
+        const d = (res as any).data ?? res;
+        setWalletBalance(d?.wallet?.balance ?? 0);
+      })
+      .catch(() => setWalletBalance(0));
+  }, []);
+
+  useEffect(() => {
+    if (activeRole !== "SELLER") return;
+    reportService.getSellerRevenue()
+      .then((res) => {
+        const d = (res as any).data ?? res;
+        setSellerRevenue(d?.totals?.totalRevenue ?? 0);
+      })
+      .catch(() => setSellerRevenue(0));
+  }, [activeRole]);
+
+  useEffect(() => {
+    if (activeRole !== "DRIVER") return;
+    deliveryService.getDashboard()
+      .then((res) => {
+        const d = (res as any).data ?? res;
+        setDriverEarning(d?.totalEarning ?? 0);
+      })
+      .catch(() => setDriverEarning(0));
+  }, [activeRole]);
 
   if (isLoading || !user) {
     return (
@@ -24,9 +89,6 @@ export function ProfileSection() {
     fullName: string;
     email: string;
     roles: Role[];
-    walletBalance: number;
-    sellerRevenue: number;
-    driverEarning: number;
   };
 
   return (
@@ -39,7 +101,7 @@ export function ProfileSection() {
           </div>
           <div>
             <h2 className="text-xl font-semibold text-[#191c1e]">
-              {fullUser.fullName ?? (user as { name?: string }).name ?? "—"}
+              {fullUser.fullName ?? "—"}
             </h2>
             <p className="flex items-center gap-1.5 text-sm text-[#6d7a77] mt-0.5">
               <Mail size={14} />
@@ -62,7 +124,6 @@ export function ProfileSection() {
           </div>
         </div>
 
-        {/* Switch role */}
         <Link
           href="/select-role"
           className="inline-flex items-center gap-2 text-sm font-medium text-[#00685f] hover:underline underline-offset-4"
@@ -72,14 +133,36 @@ export function ProfileSection() {
         </Link>
       </div>
 
-      {/* Financial summary */}
+      {/* Financial summary — sesuai role */}
       <div>
         <p className="text-xs font-medium text-[#6d7a77] mb-3 px-1">Ringkasan finansial</p>
-        <FinancialSummaryCard
-          walletBalance={fullUser.walletBalance ?? 0}
-          sellerRevenue={fullUser.sellerRevenue ?? 0}
-          driverEarning={fullUser.driverEarning ?? 0}
-        />
+        <div className="flex flex-col gap-3">
+          <FinancialCard
+            label="Saldo Dompet"
+            value={walletBalance}
+            icon={Wallet}
+            iconBg="bg-[#bee5fd]"
+            iconColor="text-[#3d6377]"
+          />
+          {activeRole === "SELLER" && (
+            <FinancialCard
+              label="Total Pendapatan Toko"
+              value={sellerRevenue}
+              icon={TrendingUp}
+              iconBg="bg-[#89f5e7]"
+              iconColor="text-[#00685f]"
+            />
+          )}
+          {activeRole === "DRIVER" && (
+            <FinancialCard
+              label="Total Penghasilan Driver"
+              value={driverEarning}
+              icon={Bike}
+              iconBg="bg-[#ffdad4]"
+              iconColor="text-[#aa2e21]"
+            />
+          )}
+        </div>
       </div>
     </div>
   );

@@ -36,6 +36,15 @@ const adminService = {
   getOverdueOrders: () =>
     apiClient.get<ApiResponse<AdminOrder[]>>("/admin/orders/overdue"),
 
+  createUser: (payload: { fullName: string; email: string; password: string; roles: string[]; activeRole: string }) =>
+    apiClient.post<ApiResponse<{ user: AdminUser }>>("/admin/users", payload),
+
+  updateUser: (id: string, payload: { fullName?: string; email?: string; password?: string; roles?: string[]; activeRole?: string }) =>
+    apiClient.patch<ApiResponse<{ user: AdminUser }>>(`/admin/users/${id}`, payload),
+
+  deleteUser: (id: string) =>
+    apiClient.delete<ApiResponse<null>>(`/admin/users/${id}`),
+
   createVoucher: (payload: VoucherFormValues) =>
     apiClient.post<ApiResponse<AdminVoucher>>("/admin/vouchers", payload),
 

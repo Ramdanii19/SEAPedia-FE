@@ -1,27 +1,36 @@
 "use client";
 
-import { Bike, Store } from "lucide-react";
+import { Zap, Clock, Package } from "lucide-react";
 import { DeliveryMethod, DELIVERY_METHOD } from "@/lib/enums";
-import { DELIVERY_METHOD_LABEL } from "@/lib/labels";
 import { formatRupiah } from "@/utils/formatRupiah";
 
 const OPTIONS: {
   value: DeliveryMethod;
+  label: string;
   icon: React.ReactNode;
   description: string;
-  fee: number | null;
+  fee: number;
 }[] = [
   {
-    value: DELIVERY_METHOD.DELIVERY,
-    icon: <Bike size={18} />,
-    description: "Produk diantar ke alamat Anda",
-    fee: null, // dihitung backend berdasarkan jarak
+    value: DELIVERY_METHOD.INSTANT,
+    label: "Instan",
+    icon: <Zap size={18} />,
+    description: "Tiba dalam 3 jam",
+    fee: 25_000,
   },
   {
-    value: DELIVERY_METHOD.PICKUP,
-    icon: <Store size={18} />,
-    description: "Ambil sendiri di lokasi toko",
-    fee: 0,
+    value: DELIVERY_METHOD.NEXT_DAY,
+    label: "Hari Berikutnya",
+    icon: <Clock size={18} />,
+    description: "Tiba keesokan harinya",
+    fee: 15_000,
+  },
+  {
+    value: DELIVERY_METHOD.REGULAR,
+    label: "Reguler",
+    icon: <Package size={18} />,
+    description: "Tiba dalam 3 hari",
+    fee: 9_000,
   },
 ];
 
@@ -57,16 +66,12 @@ export function DeliveryMethodSelect({ value, onChange }: Props) {
             </div>
             <div className="flex-1 min-w-0">
               <p className={`text-sm font-semibold ${isSelected ? "text-[#00685f]" : "text-[#191c1e]"}`}>
-                {DELIVERY_METHOD_LABEL[opt.value]}
+                {opt.label}
               </p>
               <p className="text-xs text-[#6d7a77]">{opt.description}</p>
             </div>
             <p className="shrink-0 text-sm font-semibold text-[#191c1e]">
-              {opt.fee === null
-                ? "Dihitung backend"
-                : opt.fee === 0
-                ? "Gratis"
-                : formatRupiah(opt.fee)}
+              {opt.fee === 0 ? "Gratis" : formatRupiah(opt.fee)}
             </p>
           </button>
         );

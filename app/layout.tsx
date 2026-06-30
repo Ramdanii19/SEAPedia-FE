@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { Toaster } from "sonner";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/features/cart";
+import { WishlistProvider } from "@/features/wishlist/context/WishlistContext";
+import { DynamicTitle } from "@/components/layout/DynamicTitle";
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -17,7 +20,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SEAPEDIA",
+  title: {
+    template: "%s | Seapedia",
+    default: "Seapedia",
+  },
   description: "Marketplace",
 };
 
@@ -32,9 +38,13 @@ export default function RootLayout({
       className={cn("h-full antialiased font-sans", plusJakarta.variable, geistMono.variable)}
     >
       <body className="min-h-full flex flex-col">
+        <DynamicTitle />
         <AuthProvider>
-          <CartProvider>{children}</CartProvider>
+          <CartProvider>
+            <WishlistProvider>{children}</WishlistProvider>
+          </CartProvider>
         </AuthProvider>
+        <Toaster position="bottom-right" richColors />
       </body>
     </html>
   );

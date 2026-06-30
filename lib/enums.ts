@@ -8,21 +8,19 @@ export const ROLES = {
 export type Role = (typeof ROLES)[keyof typeof ROLES];
 
 export const ORDER_STATUS = {
-  PENDING: "pending",
-  CONFIRMED: "confirmed",
-  PREPARING: "preparing",
-  READY_FOR_PICKUP: "ready_for_pickup",
-  ON_DELIVERY: "on_delivery",
-  DELIVERED: "delivered",
-  COMPLETED: "completed",
-  CANCELLED: "cancelled",
+  PACKING: "PACKING",
+  WAITING_DELIVERY: "WAITING_DELIVERY",
+  DELIVERING: "DELIVERING",
+  COMPLETED: "COMPLETED",
+  RETURNED: "RETURNED",
 } as const;
 
 export type OrderStatus = (typeof ORDER_STATUS)[keyof typeof ORDER_STATUS];
 
 export const DELIVERY_METHOD = {
-  PICKUP: "pickup",
-  DELIVERY: "delivery",
+  INSTANT: "INSTANT",
+  NEXT_DAY: "NEXT_DAY",
+  REGULAR: "REGULAR",
 } as const;
 
 export type DeliveryMethod = (typeof DELIVERY_METHOD)[keyof typeof DELIVERY_METHOD];

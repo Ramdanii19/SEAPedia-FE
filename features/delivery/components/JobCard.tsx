@@ -18,7 +18,7 @@ export function JobCard({ job, onTake }: Props) {
   async function handleTake() {
     setIsTaking(true);
     try {
-      await onTake(job.id);
+      await onTake(job._id);
     } finally {
       setIsTaking(false);
     }
@@ -36,7 +36,7 @@ export function JobCard({ job, onTake }: Props) {
         <div className="flex flex-col gap-1.5">
           {/* Store */}
           <Link
-            href={`/driver/jobs/${job.id}`}
+            href={`/driver/jobs/${job._id}`}
             className="flex items-center gap-1.5 text-sm font-semibold text-[#191c1e] hover:text-[#00685f]"
           >
             <Store size={14} className="text-[#00685f] shrink-0" />
@@ -58,7 +58,10 @@ export function JobCard({ job, onTake }: Props) {
       <div className="flex items-center justify-between gap-3 pt-1 border-t border-[#bcc9c6]/30">
         <div className="flex items-center gap-1.5 text-xs text-[#6d7a77]">
           <Bike size={13} />
-          <span>{job.order.items.length} item · {formatRupiah(job.order.finalTotal)}</span>
+          <span>
+            {job.order.items?.length ?? 0} item
+            {job.order.finalTotal ? ` · ${formatRupiah(job.order.finalTotal)}` : ""}
+          </span>
         </div>
         <Button
           size="sm"

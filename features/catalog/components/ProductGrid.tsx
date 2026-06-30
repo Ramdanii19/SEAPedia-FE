@@ -1,3 +1,4 @@
+import { PackageOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Product } from "../types/catalog.types";
 import { ProductCard } from "./ProductCard";
@@ -19,8 +20,8 @@ function Spinner() {
 function EmptyState() {
   return (
     <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
-      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#f0f5f4] text-2xl">
-        📦
+      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#f0f5f4]">
+        <PackageOpen size={28} className="text-[#00685f]" />
       </div>
       <p className="text-sm font-semibold text-[#191c1e]">Belum ada produk</p>
       <p className="text-xs text-[#6d7a77]">Produk akan ditampilkan di sini</p>
@@ -35,7 +36,7 @@ export function ProductGrid({ products, isLoading = false, gridClassName }: Prop
   return (
     <div className={cn("grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3", gridClassName)}>
       {products.map((product) => (
-        <ProductCard key={product.id} product={product} />
+        <ProductCard key={product._id} product={product} />
       ))}
     </div>
   );

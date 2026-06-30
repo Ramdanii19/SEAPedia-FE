@@ -4,6 +4,7 @@ import { Store } from "@/features/catalog/types/catalog.types";
 export type { OrderStatus, DeliveryMethod };
 
 export type OrderItem = {
+  product?: { name: string; imageUrl?: string };
   productName: string;
   price: number;
   quantity: number;
@@ -17,7 +18,7 @@ export type StatusHistory = {
 };
 
 export type Order = {
-  id: string;
+  _id: string;
   store: Store;
   items: OrderItem[];
   deliveryMethod: DeliveryMethod;
@@ -28,6 +29,9 @@ export type Order = {
   finalTotal: number;
   status: OrderStatus;
   statusHistory: StatusHistory[];
+  shippingRecipientName: string;
+  shippingPhone: string;
+  shippingAddress: string;
   createdAt: string;
 };
 

@@ -3,7 +3,7 @@ export type Wallet = {
 };
 
 export type WalletTransaction = {
-  id: string;
+  _id: string;
   type: "topup" | "payment" | "refund";
   amount: number;
   description: string;
@@ -11,7 +11,8 @@ export type WalletTransaction = {
 };
 
 export type Address = {
-  id: string;
+  _id: string;
+  label?: string;
   recipientName: string;
   phone: string;
   addressDetail: string;

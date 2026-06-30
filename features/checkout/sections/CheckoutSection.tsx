@@ -73,11 +73,11 @@ export function CheckoutSection() {
             <div className="flex flex-col gap-3">
               {addresses.map((addr) => (
                 <AddressCard
-                  key={addr.id}
+                  key={addr._id}
                   address={addr}
                   selectable
-                  selected={selectedAddressId === addr.id}
-                  onSelect={(a) => setSelectedAddressId(a.id)}
+                  selected={selectedAddressId === addr._id}
+                  onSelect={(a) => setSelectedAddressId(a._id)}
                   onEdit={() => {}}
                   onDelete={() => {}}
                 />
@@ -119,7 +119,7 @@ export function CheckoutSection() {
           </p>
           <div className="rounded-xl border border-[#bcc9c6]/40 bg-white divide-y divide-[#bcc9c6]/30">
             {cart.items.map((item) => (
-              <div key={item.product.id} className="flex items-center justify-between px-4 py-3">
+              <div key={item.product._id} className="flex items-center justify-between px-4 py-3">
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-9 h-9 shrink-0 rounded-lg bg-[#f2f4f6] overflow-hidden">
                     {item.product.imageUrl && (
@@ -191,9 +191,6 @@ export function CheckoutSection() {
           {isSubmitting ? "Memproses..." : `Bayar ${formatRupiah(finalTotal)}`}
         </Button>
 
-        <p className="text-[11px] text-center text-[#6d7a77]">
-          Nilai akhir dikonfirmasi oleh server saat pembayaran.
-        </p>
       </div>
     </div>
   );

@@ -1,28 +1,36 @@
-import { Store as StoreIcon, Info } from "lucide-react";
+import { Store as StoreIcon, MapPin } from "lucide-react";
 import { Store } from "@/features/catalog/types/catalog.types";
 
-type Props = { store: Store | null };
+type Props = {
+  store: Store | null;
+  checked: boolean;
+  onCheck: (checked: boolean) => void;
+};
 
-export function StoreBanner({ store }: Props) {
+export function StoreBanner({ store, checked, onCheck }: Props) {
   if (!store) return null;
 
   return (
-    <div className="rounded-xl border border-[#bcc9c6]/40 bg-white p-4 flex flex-col gap-2">
-      <div className="flex items-center gap-2">
-        <div className="w-8 h-8 rounded-full bg-[#00685f] flex items-center justify-center shrink-0">
-          <StoreIcon size={14} className="text-white" />
-        </div>
-        <div>
-          <p className="text-xs text-[#6d7a77]">Pesanan dari toko</p>
-          <p className="text-sm font-semibold text-[#191c1e]">{store.storeName}</p>
-        </div>
+    <div className="flex items-center gap-3 px-1 py-3 border-b border-[#bcc9c6]/30">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onCheck(e.target.checked)}
+        className="h-4 w-4 shrink-0 rounded border-gray-300 accent-[#00685f] cursor-pointer"
+      />
+      <div className="w-7 h-7 rounded-md bg-[#00685f]/10 flex items-center justify-center shrink-0">
+        <StoreIcon size={13} className="text-[#00685f]" />
       </div>
-      <div className="flex items-start gap-1.5 text-xs text-[#6d7a77]">
-        <Info size={12} className="shrink-0 mt-0.5" />
-        <span>
-          Keranjang hanya mendukung produk dari 1 toko per checkout. Untuk berbelanja dari toko lain, kosongkan keranjang terlebih dahulu.
-        </span>
-      </div>
+      <span className="text-sm font-bold text-[#191c1e]">{store.storeName}</span>
+      <span className="inline-flex items-center rounded-full bg-[#00685f]/10 px-2 py-0.5 text-[10px] font-semibold text-[#00685f]">
+        TERVERIFIKASI
+      </span>
+      {store.addressDetail && (
+        <div className="flex items-center gap-1 ml-auto text-xs text-[#6d7a77]">
+          <MapPin size={11} />
+          <span className="truncate max-w-30">{store.addressDetail}</span>
+        </div>
+      )}
     </div>
   );
 }

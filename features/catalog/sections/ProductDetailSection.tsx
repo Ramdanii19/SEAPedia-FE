@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronRight, BadgeCheck, ShoppingCart, Heart, Minus, Plus, Info } from "lucide-react";
+import { toast } from "sonner";
+import { ChevronRight, BadgeCheck, ShoppingCart, Heart, Minus, Plus, Info, Check } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Role } from "@/features/auth/types/auth.types";
 import { useCart } from "@/features/cart";
@@ -10,7 +11,7 @@ import { formatRupiah } from "@/utils/formatRupiah";
 import { useProductDetail } from "../hooks/useProductDetail";
 import { StoreInfoBlock } from "../components/StoreInfoBlock";
 
-type Props = { id: number };
+type Props = { id: string };
 
 function Skeleton() {
   return (
@@ -46,11 +47,16 @@ export function ProductDetailSection({ id }: Props) {
     setAddError(null);
     setAddSuccess(false);
     try {
-      await add(product.id, qty);
+      await add(product._id, qty);
       setAddSuccess(true);
       setTimeout(() => setAddSuccess(false), 2000);
+      toast.success("Ditambahkan ke keranjang", {
+        description: `${product.name} (x${qty})`,
+      });
     } catch (err: any) {
-      setAddError(err?.message ?? "Gagal menambahkan ke keranjang");
+      const msg = err?.message ?? "Gagal menambahkan ke keranjang";
+      setAddError(msg);
+      toast.error("Gagal menambahkan", { description: msg });
     } finally {
       setIsAdding(false);
     }
@@ -168,7 +174,7 @@ export function ProductDetailSection({ id }: Props) {
                   {isAdding
                     ? "Menambahkan..."
                     : addSuccess
-                    ? "Ditambahkan ✓"
+                    ? <><Check size={15} />Ditambahkan</>
                     : product.stock === 0
                     ? "Stok Habis"
                     : "Tambah ke Keranjang"}

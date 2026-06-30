@@ -7,7 +7,7 @@ const orderService = {
     apiClient.get<ApiResponse<Order[]>>("/orders"),
 
   getOrder: (id: string) =>
-    apiClient.get<ApiResponse<Order>>(`/orders/${id}`),
+    apiClient.get<ApiResponse<{ order: Order }>>(`/orders/${id}`),
 
   getSellerIncoming: () =>
     apiClient.get<ApiResponse<Order[]>>("/orders/seller/incoming"),
