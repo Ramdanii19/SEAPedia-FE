@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { ShoppingCart, ChevronDown, LayoutDashboard, User, RefreshCw, LogOut, Menu, X } from "lucide-react";
+import { ShoppingCart, LayoutDashboard, User, RefreshCw, LogOut, Menu, X } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLogout } from "@/features/auth/hooks/useLogout";
 import { RoleBadge } from "@/features/auth/components/RoleBadge";
@@ -82,21 +82,26 @@ export function Navbar() {
                 </Link>
               )}
 
+              {/* Role badge — display only */}
+              {role && <RoleBadge role={role} active />}
+
               {/* Dropdown profil */}
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setDropdownOpen((v) => !v)}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-[#f2f4f6] transition-colors"
+                  className="flex items-center justify-center w-9 h-9 rounded-full bg-[#e8f5f3] hover:bg-[#d0eeea] transition-colors"
+                  aria-label="Menu profil"
                 >
-                  {role && <RoleBadge role={role} active />}
-                  <ChevronDown
-                    size={15}
-                    className={`text-[#6d7a77] transition-transform ${dropdownOpen ? "rotate-180" : ""}`}
-                  />
+                  <User size={18} className="text-[#00685f]" />
                 </button>
 
                 {dropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl border border-[#bcc9c6]/30 shadow-lg py-1 z-50">
+                  <div className="absolute right-0 mt-2 w-52 bg-white rounded-xl border border-[#bcc9c6]/30 shadow-lg py-1 z-50">
+                    {/* User info */}
+                    <div className="px-4 py-2.5 border-b border-[#bcc9c6]/30">
+                      <p className="text-xs font-semibold text-[#191c1e] truncate">{user.name}</p>
+                      <p className="text-xs text-[#6d7a77] truncate">{user.email}</p>
+                    </div>
                     <Link
                       href="/profile"
                       onClick={() => setDropdownOpen(false)}
@@ -106,7 +111,7 @@ export function Navbar() {
                       Profil Saya
                     </Link>
                     <Link
-                      href="/select-role"
+                      href="/select-role?switch=true"
                       onClick={() => setDropdownOpen(false)}
                       className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#191c1e] hover:bg-[#f2f4f6] transition-colors"
                     >
@@ -181,7 +186,7 @@ export function Navbar() {
               <>
                 {role && <RoleBadge role={role} active />}
                 <Link href="/profile" onClick={() => setMobileOpen(false)} className="text-sm text-[#3d4947] py-1 flex items-center gap-2"><User size={14} />Profil Saya</Link>
-                <Link href="/select-role" onClick={() => setMobileOpen(false)} className="text-sm text-[#3d4947] py-1 flex items-center gap-2"><RefreshCw size={14} />Ganti Peran</Link>
+                <Link href="/select-role?switch=true" onClick={() => setMobileOpen(false)} className="text-sm text-[#3d4947] py-1 flex items-center gap-2"><RefreshCw size={14} />Ganti Peran</Link>
                 {role === "BUYER" && (
                   <Link href="/cart" onClick={() => setMobileOpen(false)} className="text-sm text-[#3d4947] py-1 flex items-center gap-2"><ShoppingCart size={14} />Keranjang</Link>
                 )}

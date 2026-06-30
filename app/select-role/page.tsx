@@ -1,5 +1,10 @@
+import { Suspense } from "react";
 import { RoleSelectionView } from "@/features/auth/views/RoleSelectionView";
 
 export default function SelectRolePage() {
-  return <RoleSelectionView />;
+  return (
+    <Suspense>
+      <RoleSelectionView />
+    </Suspense>
+  );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { roleHome } from "@/utils/roleHome";
 import { Role } from "@/features/auth/types/auth.types";
@@ -9,13 +9,15 @@ import { RoleSelectionSection } from "@/features/auth/sections/RoleSelectionSect
 
 export function RoleSelectionView() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isSwitching = searchParams.get("switch") === "true";
   const { user, activeRole, isLoading } = useAuth();
 
   useEffect(() => {
     if (isLoading) return;
     if (!user) { router.replace("/login"); return; }
-    if (activeRole) { router.replace(roleHome(activeRole as unknown as Role)); return; }
-  }, [isLoading, user, activeRole, router]);
+    if (activeRole && !isSwitching) { router.replace(roleHome(activeRole as unknown as Role)); return; }
+  }, [isLoading, user, activeRole, isSwitching, router]);
 
   if (isLoading || !user) return null;
 
