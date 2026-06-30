@@ -5,6 +5,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/features/cart";
+import { WishlistProvider } from "@/features/wishlist/context/WishlistContext";
 import { DynamicTitle } from "@/components/layout/DynamicTitle";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -39,7 +40,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <DynamicTitle />
         <AuthProvider>
-          <CartProvider>{children}</CartProvider>
+          <CartProvider>
+            <WishlistProvider>{children}</WishlistProvider>
+          </CartProvider>
         </AuthProvider>
         <Toaster position="bottom-right" richColors />
       </body>

@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { Role } from "@/features/auth/types/auth.types";
 import { formatRupiah } from "@/utils/formatRupiah";
+import { useWishlist } from "@/features/wishlist/context/WishlistContext";
 import { Product } from "../types/catalog.types";
 
 type Props = { product: Product };
@@ -13,6 +14,9 @@ type Props = { product: Product };
 export function ProductCard({ product }: Props) {
   const { user, activeRole } = useAuth();
   const isBuyer = !!user && (activeRole as unknown as Role) === "BUYER";
+  const { ids, toggle } = useWishlist();
+  const productId = product._id ?? (product as any).id;
+  const isWishlisted = ids.has(productId);
 
   return (
     <Card className="p-0 flex flex-col h-full hover:shadow-md transition-shadow">
@@ -51,9 +55,18 @@ export function ProductCard({ product }: Props) {
           >
             {product.name}
           </Link>
-          <button className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full hover:bg-[#f2f4f6] transition-colors">
-            <Heart size={13} className="text-[#6d7a77]" />
-          </button>
+          {isBuyer && (
+            <button
+              onClick={(e) => { e.preventDefault(); toggle(productId); }}
+              className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full hover:bg-[#fde8e6] transition-colors"
+              title={isWishlisted ? "Hapus dari wishlist" : "Tambah ke wishlist"}
+            >
+              <Heart
+                size={13}
+                className={isWishlisted ? "text-[#e53935] fill-[#e53935]" : "text-[#6d7a77]"}
+              />
+            </button>
+          )}
         </div>
 
         {/* Price */}
