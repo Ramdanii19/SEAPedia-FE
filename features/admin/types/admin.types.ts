@@ -1,8 +1,9 @@
 export type AdminUser = {
-  id: string;
-  name: string;
+  _id: string;
+  fullName: string;
   email: string;
   roles: string[];
+  activeRole: string;
   createdAt: string;
 };
 
