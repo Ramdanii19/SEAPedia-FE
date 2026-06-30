@@ -70,7 +70,7 @@ export function Navbar() {
 
         {/* Actions — desktop */}
         <div className="hidden md:flex items-center gap-3 shrink-0">
-          {isLoading ? null : user ? (
+          {!isLoading && user ? (
             <>
               {/* Keranjang — hanya BUYER */}
               {role === "BUYER" && (
@@ -127,7 +127,7 @@ export function Navbar() {
               </div>
             </>
           ) : (
-            <>
+            <div className={isLoading ? "invisible flex items-center gap-3" : "flex items-center gap-3"}>
               <Link
                 href="/login"
                 className="text-sm font-medium text-[#3d4947] hover:text-[#00685f] transition-colors px-3 py-1.5"
@@ -140,7 +140,7 @@ export function Navbar() {
               >
                 Daftar
               </Link>
-            </>
+            </div>
           )}
         </div>
 

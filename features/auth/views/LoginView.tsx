@@ -17,7 +17,7 @@ export function LoginView() {
     router.replace(dest);
   }, [isLoading, user, activeRole, router]);
 
-  if (isLoading || user) return null;
+  if (isLoading || user) return <div className="min-h-screen bg-[#f8f9fb]" />;
 
   return (
     <div className="relative min-h-screen flex flex-col overflow-x-hidden bg-[#f8f9fb]">
