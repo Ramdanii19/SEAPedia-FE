@@ -77,7 +77,7 @@ export function CheckoutSection() {
                   address={addr}
                   selectable
                   selected={selectedAddressId === addr._id}
-                  onSelect={(a) => setSelectedAddressId(a.id)}
+                  onSelect={(a) => setSelectedAddressId(a._id)}
                   onEdit={() => {}}
                   onDelete={() => {}}
                 />

@@ -1,5 +1,5 @@
 export type BuyerSpendingOrder = {
-  id: string;
+  _id: string;
   createdAt: string;
   finalTotal: number;
   status: string;

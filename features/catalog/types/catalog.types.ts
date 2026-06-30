@@ -2,6 +2,7 @@ export type Store = {
   _id: string;
   storeName: string;
   description: string;
+  addressDetail?: string;
 };
 
 export type Product = {

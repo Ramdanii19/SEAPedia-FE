@@ -15,14 +15,14 @@ export function ProductCard({ product }: Props) {
   const { user, activeRole } = useAuth();
   const isBuyer = !!user && (activeRole as unknown as Role) === "BUYER";
   const { ids, toggle } = useWishlist();
-  const productId = product._id ?? (product as any).id;
+  const productId = product._id;
   const isWishlisted = ids.has(productId);
 
   return (
     <Card className="p-0 flex flex-col h-full hover:shadow-md transition-shadow">
       {/* Image */}
       <Link
-        href={`/products/${product._id ?? product.id}`}
+        href={`/products/${product._id}`}
         className="relative block aspect-square overflow-hidden rounded-t-xl bg-[#f2f4f6]"
       >
         {product.imageUrl ? (
@@ -50,7 +50,7 @@ export function ProductCard({ product }: Props) {
         {/* Name + wishlist */}
         <div className="flex items-start justify-between gap-2">
           <Link
-            href={`/products/${product._id ?? product.id}`}
+            href={`/products/${product._id}`}
             className="flex-1 text-sm font-semibold leading-snug text-[#191c1e] line-clamp-2 hover:text-[#00685f] transition-colors"
           >
             {product.name}

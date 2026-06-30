@@ -7,7 +7,7 @@ import {
   useState,
   useCallback,
 } from "react";
-import { Role } from "@/lib/enums";
+import { Role } from "@/features/auth/types/auth.types";
 import apiClient from "@/services/apiClient";
 import { ApiResponse } from "@/types/common.types";
 import { SESSION_KEYS, clearStorageSession, getToken, getActiveRole } from "@/lib/session";

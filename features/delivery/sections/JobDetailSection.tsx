@@ -119,7 +119,7 @@ export function JobDetailSection({ id }: Props) {
       {/* Timeline */}
       <div className="rounded-xl border border-[#bcc9c6]/40 bg-white p-5">
         <p className="text-sm font-semibold text-[#191c1e] mb-4">Riwayat Status</p>
-        <OrderTimeline history={order.statusHistory} />
+        <OrderTimeline history={order.statusHistory} currentStatus={order.status} />
       </div>
 
       {/* Action */}
