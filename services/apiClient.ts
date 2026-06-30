@@ -35,7 +35,9 @@ async function request<T>(
   if (!res.ok) {
     // Token expired or invalid — clear session and force re-login.
     // Note: FE guard is UX only; real authorization lives in the BE.
-    if (res.status === 401 && typeof window !== "undefined") {
+    // Hanya redirect jika ada token aktif (session expired),
+    // bukan saat unauthenticated request seperti login dengan password salah.
+    if (res.status === 401 && typeof window !== "undefined" && getToken()) {
       clearStorageSession();
       window.location.replace("/login");
     }
@@ -78,7 +80,7 @@ const apiClient = {
     const json = await res.json();
 
     if (!res.ok) {
-      if (res.status === 401 && typeof window !== "undefined") {
+      if (res.status === 401 && typeof window !== "undefined" && getToken()) {
         clearStorageSession();
         window.location.replace("/login");
       }
