@@ -35,7 +35,7 @@ export function OrderListSection() {
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 w-full">
       {orders.map((order) => (
         <OrderCard key={order._id} order={order} />
       ))}

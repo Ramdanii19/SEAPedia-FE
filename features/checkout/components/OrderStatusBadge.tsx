@@ -1,25 +1,22 @@
+import { Clock, Truck, CheckCircle2, RotateCcw, Package } from "lucide-react";
 import { OrderStatus, ORDER_STATUS } from "@/lib/enums";
 import { ORDER_STATUS_LABEL } from "@/lib/labels";
 
-const STATUS_STYLE: Record<OrderStatus, string> = {
-  [ORDER_STATUS.PENDING]:          "bg-amber-100 text-amber-700",
-  [ORDER_STATUS.CONFIRMED]:        "bg-blue-100 text-blue-700",
-  [ORDER_STATUS.PREPARING]:        "bg-orange-100 text-orange-700",
-  [ORDER_STATUS.READY_FOR_PICKUP]: "bg-purple-100 text-purple-700",
-  [ORDER_STATUS.ON_DELIVERY]:      "bg-sky-100 text-sky-700",
-  [ORDER_STATUS.DELIVERED]:        "bg-teal-100 text-teal-700",
-  [ORDER_STATUS.COMPLETED]:        "bg-[#00685f]/10 text-[#00685f]",
-  [ORDER_STATUS.CANCELLED]:        "bg-[#cc4636]/10 text-[#cc4636]",
+const STATUS_CONFIG: Record<OrderStatus, { bg: string; icon: React.ReactNode }> = {
+  [ORDER_STATUS.PACKING]:          { bg: "bg-amber-50 text-amber-700 border border-amber-200",        icon: <Package size={11} /> },
+  [ORDER_STATUS.WAITING_DELIVERY]: { bg: "bg-blue-50 text-blue-700 border border-blue-200",           icon: <Clock size={11} /> },
+  [ORDER_STATUS.DELIVERING]:       { bg: "bg-[#e6f4f2] text-[#00685f] border border-[#00685f]/20",   icon: <Truck size={11} /> },
+  [ORDER_STATUS.COMPLETED]:        { bg: "bg-[#00685f]/10 text-[#00685f] border border-[#00685f]/20", icon: <CheckCircle2 size={11} /> },
+  [ORDER_STATUS.RETURNED]:         { bg: "bg-red-50 text-red-600 border border-red-200",              icon: <RotateCcw size={11} /> },
 };
 
 type Props = { status: OrderStatus };
 
 export function OrderStatusBadge({ status }: Props) {
-  const style = STATUS_STYLE[status] ?? "bg-[#f2f4f6] text-[#6d7a77]";
+  const cfg = STATUS_CONFIG[status] ?? { bg: "bg-gray-100 text-gray-600 border border-gray-200", icon: <Package size={11} /> };
   return (
-    <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${style}`}
-    >
+    <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${cfg.bg}`}>
+      {cfg.icon}
       {ORDER_STATUS_LABEL[status] ?? status}
     </span>
   );

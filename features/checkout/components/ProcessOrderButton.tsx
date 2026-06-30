@@ -15,7 +15,7 @@ type Props = {
 export function ProcessOrderButton({ orderId, status, onProcessed }: Props) {
   const [isLoading, setIsLoading] = useState(false);
 
-  if (status !== ORDER_STATUS.PREPARING) return null;
+  if (status !== ORDER_STATUS.PACKING) return null;
 
   async function handleProcess() {
     setIsLoading(true);

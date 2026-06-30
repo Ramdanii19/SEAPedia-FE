@@ -7,17 +7,14 @@ import { ORDER_STATUS } from "@/lib/enums";
 import { StatusHistory, OrderStatus } from "../types/order.types";
 
 const STATUS_FLOW: OrderStatus[] = [
-  ORDER_STATUS.PENDING,
-  ORDER_STATUS.CONFIRMED,
-  ORDER_STATUS.PREPARING,
-  ORDER_STATUS.READY_FOR_PICKUP,
-  ORDER_STATUS.ON_DELIVERY,
-  ORDER_STATUS.DELIVERED,
+  ORDER_STATUS.PACKING,
+  ORDER_STATUS.WAITING_DELIVERY,
+  ORDER_STATUS.DELIVERING,
   ORDER_STATUS.COMPLETED,
 ];
 
 function getNextStatus(current: OrderStatus): OrderStatus | null {
-  if (current === ORDER_STATUS.CANCELLED) return null;
+  if (current === ORDER_STATUS.RETURNED) return null;
   const idx = STATUS_FLOW.indexOf(current);
   if (idx === -1 || idx === STATUS_FLOW.length - 1) return null;
   return STATUS_FLOW[idx + 1];

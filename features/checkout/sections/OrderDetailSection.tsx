@@ -14,25 +14,20 @@ import { useOrderDetail } from "../hooks/useOrderDetail";
 import { generateInvoicePdf } from "@/utils/generateInvoicePdf";
 
 const STATUS_BANNER: Partial<Record<string, { bg: string; text: string; sub: string }>> = {
-  [ORDER_STATUS.ON_DELIVERY]: {
-    bg: "bg-[#e6f4f2] border border-[#00685f]/20",
-    text: "Pesanan Dalam Pengiriman",
-    sub: "Kurir sedang menuju lokasi Anda. Pantau posisi kurir secara real-time.",
-  },
-  [ORDER_STATUS.PREPARING]: {
+  [ORDER_STATUS.PACKING]: {
     bg: "bg-amber-50 border border-amber-200",
     text: "Pesanan Sedang Dikemas",
     sub: "Penjual sedang menyiapkan dan mengemas pesanan Anda.",
   },
-  [ORDER_STATUS.READY_FOR_PICKUP]: {
-    bg: "bg-purple-50 border border-purple-200",
+  [ORDER_STATUS.WAITING_DELIVERY]: {
+    bg: "bg-blue-50 border border-blue-200",
     text: "Menunggu Kurir",
     sub: "Pesanan siap dan menunggu kurir menjemput.",
   },
-  [ORDER_STATUS.DELIVERED]: {
-    bg: "bg-teal-50 border border-teal-200",
-    text: "Pesanan Telah Dikirim",
-    sub: "Pesanan sudah tiba. Segera konfirmasi jika sudah diterima.",
+  [ORDER_STATUS.DELIVERING]: {
+    bg: "bg-[#e6f4f2] border border-[#00685f]/20",
+    text: "Pesanan Dalam Pengiriman",
+    sub: "Kurir sedang menuju lokasi Anda. Pantau posisi kurir secara real-time.",
   },
 };
 
@@ -286,7 +281,7 @@ export function OrderDetailSection({ id, backHref = "/orders", backLabel = "Pesa
 
             <OrderTimeline history={order.statusHistory} currentStatus={order.status} />
 
-            {order.status === ORDER_STATUS.ON_DELIVERY && (
+            {order.status === ORDER_STATUS.DELIVERING && (
               <button className="mt-4 w-full flex items-center justify-center gap-2 rounded-lg border border-[#bcc9c6]/60 bg-[#f8f9fb] py-2.5 text-xs font-medium text-[#3d4947] hover:bg-[#eef1f0] transition-colors">
                 <MapPinned size={13} />
                 Lacak Lokasi Real-time
