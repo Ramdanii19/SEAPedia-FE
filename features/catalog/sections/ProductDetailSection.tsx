@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronRight, BadgeCheck, ShoppingCart, Heart, Minus, Plus, Info } from "lucide-react";
+import { ChevronRight, BadgeCheck, ShoppingCart, Heart, Minus, Plus, Info, Check } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Role } from "@/features/auth/types/auth.types";
 import { useCart } from "@/features/cart";
@@ -168,7 +168,7 @@ export function ProductDetailSection({ id }: Props) {
                   {isAdding
                     ? "Menambahkan..."
                     : addSuccess
-                    ? "Ditambahkan ✓"
+                    ? <><Check size={15} />Ditambahkan</>
                     : product.stock === 0
                     ? "Stok Habis"
                     : "Tambah ke Keranjang"}

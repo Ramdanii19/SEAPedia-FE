@@ -1,6 +1,6 @@
 "use client";
 
-import { MapPin, Pencil, Trash2, Star } from "lucide-react";
+import { MapPin, Pencil, Trash2, Star, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Address } from "../types/wallet.types";
 
@@ -82,7 +82,7 @@ export function AddressCard({
 
       {/* Selected indicator in selectable mode */}
       {selectable && selected && (
-        <p className="text-xs font-medium text-[#00685f]">✓ Dipilih</p>
+        <p className="flex items-center gap-1 text-xs font-medium text-[#00685f]"><Check size={12} />Dipilih</p>
       )}
     </div>
   );

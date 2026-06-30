@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Bike, PackageCheck } from "lucide-react";
+import { Bike, PackageCheck, ArrowRight } from "lucide-react";
 import { StatCard } from "@/features/report/components/StatCard";
 import { formatRupiah } from "@/utils/formatRupiah";
 import { formatDate } from "@/utils/formatDate";
@@ -98,7 +98,7 @@ export function DriverDashboardSection() {
           <div>
             <p className="text-sm font-semibold text-[#191c1e]">Tidak Ada Job Aktif</p>
             <Link href="/driver/jobs" className="mt-1 block text-sm text-[#00685f] hover:underline">
-              Cari job tersedia →
+              <span className="flex items-center gap-1">Cari job tersedia <ArrowRight size={14} /></span>
             </Link>
           </div>
         </div>
