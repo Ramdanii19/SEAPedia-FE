@@ -76,8 +76,7 @@ export function SellerIncomingSection() {
                 </Link>
               </td>
               <td className="py-3 px-4 text-sm text-[#3d4947]">
-                {/* buyer name not always in payload — fallback */}
-                {(order as any).buyerName ?? "—"}
+                {(order as any).buyer?.fullName ?? "—"}
               </td>
               <td className="py-3 px-4">
                 <div className="flex flex-col gap-0.5">
