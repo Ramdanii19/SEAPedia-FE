@@ -7,6 +7,7 @@ export const topupSchema = z.object({
 export type TopupFormValues = z.infer<typeof topupSchema>;
 
 export const addressSchema = z.object({
+  label: z.string().optional(),
   recipientName: z.string().min(2, "Nama penerima minimal 2 karakter"),
   phone: z
     .string()

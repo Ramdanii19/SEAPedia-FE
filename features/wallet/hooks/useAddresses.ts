@@ -40,5 +40,10 @@ export function useAddresses() {
     await load();
   }
 
-  return { addresses, isLoading, reload: load, createAddress, updateAddress, deleteAddress };
+  async function setDefault(id: string) {
+    await addressService.updateAddress(id, { isDefault: true });
+    await load();
+  }
+
+  return { addresses, isLoading, reload: load, createAddress, updateAddress, deleteAddress, setDefault };
 }

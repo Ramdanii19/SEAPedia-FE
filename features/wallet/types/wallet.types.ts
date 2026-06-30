@@ -12,6 +12,7 @@ export type WalletTransaction = {
 
 export type Address = {
   _id: string;
+  label?: string;
   recipientName: string;
   phone: string;
   addressDetail: string;
