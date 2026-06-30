@@ -6,5 +6,5 @@ export default async function ProductDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  return <ProductDetailView id={Number(id)} />;
+  return <ProductDetailView id={id} />;
 }

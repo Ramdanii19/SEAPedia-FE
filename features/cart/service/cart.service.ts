@@ -4,16 +4,16 @@ import { Cart } from "../types/cart.types";
 
 const cartService = {
   getCart: () =>
-    apiClient.get<ApiResponse<Cart>>("/cart"),
+    apiClient.get<ApiResponse<{ cart: Cart; subtotal: number; totalItems: number }>>("/cart"),
 
-  addToCart: (payload: { productId: number; quantity: number }) =>
-    apiClient.post<ApiResponse<Cart>>("/cart/items", payload),
+  addToCart: (payload: { productId: string; quantity: number }) =>
+    apiClient.post<ApiResponse<{ cart: Cart }>>("/cart/items", payload),
 
-  updateQty: (productId: number, quantity: number) =>
-    apiClient.patch<ApiResponse<Cart>>(`/cart/items/${productId}`, { quantity }),
+  updateQty: (productId: string, quantity: number) =>
+    apiClient.patch<ApiResponse<{ cart: Cart }>>(`/cart/items/${productId}`, { quantity }),
 
-  removeItem: (productId: number) =>
-    apiClient.delete<ApiResponse<Cart>>(`/cart/items/${productId}`),
+  removeItem: (productId: string) =>
+    apiClient.delete<ApiResponse<{ cart: Cart }>>(`/cart/items/${productId}`),
 
   clearCart: () =>
     apiClient.delete<ApiResponse<null>>("/cart"),

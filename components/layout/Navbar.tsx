@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ShoppingCart, LayoutDashboard, User, RefreshCw, LogOut, Menu, X } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLogout } from "@/features/auth/hooks/useLogout";
+import { useCartItemCount } from "@/features/cart/contexts/CartContext";
 import { RoleBadge } from "@/features/auth/components/RoleBadge";
 import { Role } from "@/features/auth/types/auth.types";
 import { roleHome } from "@/utils/roleHome";
@@ -18,6 +19,7 @@ const NAV_LINKS = [
 export function Navbar() {
   const { user, activeRole, isLoading } = useAuth();
   const { logout, isLoggingOut } = useLogout();
+  const cartCount = useCartItemCount();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -79,6 +81,11 @@ export function Navbar() {
                   className="relative p-2 rounded-lg text-[#3d4947] hover:bg-[#f2f4f6] transition-colors"
                 >
                   <ShoppingCart size={20} />
+                  {cartCount > 0 && (
+                    <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#cc4636] text-[10px] font-bold text-white">
+                      {cartCount > 99 ? "99+" : cartCount}
+                    </span>
+                  )}
                 </Link>
               )}
 

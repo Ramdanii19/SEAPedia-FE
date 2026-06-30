@@ -29,8 +29,8 @@ const catalogService = {
     );
   },
 
-  getProduct: (id: number) =>
-    apiClient.get<ApiResponse<Product>>(`/products/${id}`, { auth: false }),
+  getProduct: (id: string) =>
+    apiClient.get<ApiResponse<{ product: Product }>>(`/products/${id}`, { auth: false }),
 
   getStore: (id: number) =>
     apiClient.get<ApiResponse<Store>>(`/stores/${id}`, { auth: false }),

@@ -6,8 +6,8 @@ import { CartItem } from "../types/cart.types";
 
 type Props = {
   item: CartItem;
-  onQtyChange: (productId: number, qty: number) => void;
-  onRemove: (productId: number) => void;
+  onQtyChange: (productId: string, qty: number) => void;
+  onRemove: (productId: string) => void;
 };
 
 export function CartItemRow({ item, onQtyChange, onRemove }: Props) {
@@ -40,7 +40,7 @@ export function CartItemRow({ item, onQtyChange, onRemove }: Props) {
         <div className="flex items-center justify-between mt-1">
           <div className="flex items-center rounded-lg border border-[#bcc9c6]">
             <button
-              onClick={() => onQtyChange(product.id, quantity - 1)}
+              onClick={() => onQtyChange(product._id, quantity - 1)}
               disabled={quantity <= 1}
               className="w-8 h-8 flex items-center justify-center text-[#3d4947] hover:bg-[#f2f4f6] transition-colors rounded-l-lg disabled:opacity-40 disabled:cursor-not-allowed"
             >
@@ -50,7 +50,7 @@ export function CartItemRow({ item, onQtyChange, onRemove }: Props) {
               {quantity}
             </span>
             <button
-              onClick={() => onQtyChange(product.id, quantity + 1)}
+              onClick={() => onQtyChange(product._id, quantity + 1)}
               disabled={quantity >= product.stock}
               className="w-8 h-8 flex items-center justify-center text-[#3d4947] hover:bg-[#f2f4f6] transition-colors rounded-r-lg disabled:opacity-40 disabled:cursor-not-allowed"
             >
@@ -63,7 +63,7 @@ export function CartItemRow({ item, onQtyChange, onRemove }: Props) {
               {formatRupiah(subtotal)}
             </span>
             <button
-              onClick={() => onRemove(product.id)}
+              onClick={() => onRemove(product._id)}
               className="text-[#cc4636] hover:text-[#b03a2e] transition-colors"
               title="Hapus"
             >

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { Controller } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ export function ProductForm({ productId, defaultValues, onSuccess }: Props) {
 
   const {
     register,
+    control,
     formState: { errors },
   } = form;
 
@@ -59,12 +61,22 @@ export function ProductForm({ productId, defaultValues, onSuccess }: Props) {
           <label className="text-sm font-medium text-[#191c1e]">
             Harga (Rp) <span className="text-[#cc4636]">*</span>
           </label>
-          <Input
-            type="number"
-            min={0}
-            placeholder="0"
-            {...register("price", { valueAsNumber: true })}
-            aria-invalid={!!errors.price}
+          <Controller
+            control={control}
+            name="price"
+            render={({ field }) => (
+              <Input
+                type="text"
+                inputMode="numeric"
+                placeholder="0"
+                value={field.value != null && !isNaN(field.value) ? field.value.toLocaleString("id-ID") : ""}
+                onChange={(e) => {
+                  const raw = e.target.value.replace(/[^0-9]/g, "");
+                  field.onChange(raw === "" ? undefined : Number(raw));
+                }}
+                aria-invalid={!!errors.price}
+              />
+            )}
           />
           {errors.price && (
             <p className="text-xs text-red-500">{errors.price.message}</p>
@@ -75,12 +87,22 @@ export function ProductForm({ productId, defaultValues, onSuccess }: Props) {
           <label className="text-sm font-medium text-[#191c1e]">
             Stok <span className="text-[#cc4636]">*</span>
           </label>
-          <Input
-            type="number"
-            min={0}
-            placeholder="0"
-            {...register("stock", { valueAsNumber: true })}
-            aria-invalid={!!errors.stock}
+          <Controller
+            control={control}
+            name="stock"
+            render={({ field }) => (
+              <Input
+                type="text"
+                inputMode="numeric"
+                placeholder="0"
+                value={field.value != null && !isNaN(field.value) ? field.value.toLocaleString("id-ID") : ""}
+                onChange={(e) => {
+                  const raw = e.target.value.replace(/[^0-9]/g, "");
+                  field.onChange(raw === "" ? undefined : Number(raw));
+                }}
+                aria-invalid={!!errors.stock}
+              />
+            )}
           />
           {errors.stock && (
             <p className="text-xs text-red-500">{errors.stock.message}</p>

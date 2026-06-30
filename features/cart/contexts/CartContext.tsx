@@ -24,9 +24,9 @@ type CartContextValue = {
   cart: Cart | null;
   isLoading: boolean;
   refresh: () => Promise<void>;
-  add: (productId: number, qty: number) => Promise<void>;
-  updateQty: (productId: number, qty: number) => Promise<void>;
-  remove: (productId: number) => Promise<void>;
+  add: (productId: string, qty: number) => Promise<void>;
+  updateQty: (productId: string, qty: number) => Promise<void>;
+  remove: (productId: string) => Promise<void>;
   clear: () => Promise<void>;
 };
 
@@ -39,7 +39,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<Cart | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [conflictPending, setConflictPending] = useState<{
-    productId: number;
+    productId: string;
     qty: number;
   } | null>(null);
   const [isClearing, setIsClearing] = useState(false);
@@ -51,7 +51,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
     try {
       const res = await cartService.getCart();
-      setCart(res.data ?? null);
+      setCart(res.data.cart ?? null);
     } catch {
       setCart(null);
     }
@@ -62,10 +62,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     refresh().finally(() => setIsLoading(false));
   }, [refresh]);
 
-  async function add(productId: number, qty: number) {
+  async function add(productId: string, qty: number) {
     try {
       const res = await cartService.addToCart({ productId, quantity: qty });
-      setCart(res.data ?? null);
+      setCart(res.data.cart ?? null);
     } catch (err: any) {
       const msg: string = err?.message ?? "";
       if (/different store|beda toko|toko lain|store/i.test(msg)) {
@@ -76,14 +76,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  async function updateQty(productId: number, qty: number) {
+  async function updateQty(productId: string, qty: number) {
     const res = await cartService.updateQty(productId, qty);
-    setCart(res.data ?? null);
+    setCart(res.data.cart ?? null);
   }
 
-  async function remove(productId: number) {
+  async function remove(productId: string) {
     const res = await cartService.removeItem(productId);
-    setCart(res.data ?? null);
+    setCart(res.data.cart ?? null);
   }
 
   async function clear() {
@@ -100,7 +100,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         productId: conflictPending.productId,
         quantity: conflictPending.qty,
       });
-      setCart(res.data ?? null);
+      setCart(res.data.cart ?? null);
       setConflictPending(null);
     } finally {
       setIsClearing(false);
@@ -155,5 +155,5 @@ export function useCart(): CartContextValue {
 
 export function useCartItemCount(): number {
   const ctx = useContext(CartContext);
-  return ctx?.cart?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
+  return ctx?.cart?.items.length ?? 0;
 }

@@ -20,6 +20,7 @@ export function CartSection() {
   }
 
   const isEmpty = !cart || cart.items.length === 0;
+  const subtotal = cart?.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0) ?? 0;
 
   if (isEmpty) {
     return (
@@ -52,7 +53,7 @@ export function CartSection() {
         <div className="rounded-xl border border-[#bcc9c6]/40 bg-white px-5">
           {cart.items.map((item) => (
             <CartItemRow
-              key={item.product.id}
+              key={item.product._id}
               item={item}
               onQtyChange={updateQty}
               onRemove={remove}
@@ -64,7 +65,7 @@ export function CartSection() {
       {/* Right — summary */}
       <div className="sticky top-20">
         <CartSummary
-          subtotal={cart.subtotal}
+          subtotal={subtotal}
           onCheckout={() => router.push("/checkout")}
         />
       </div>

@@ -18,7 +18,7 @@ export function ProductCard({ product }: Props) {
     <Card className="p-0 flex flex-col h-full hover:shadow-md transition-shadow">
       {/* Image */}
       <Link
-        href={`/products/${product.id}`}
+        href={`/products/${product._id ?? product.id}`}
         className="relative block aspect-square overflow-hidden rounded-t-xl bg-[#f2f4f6]"
       >
         {product.imageUrl ? (
@@ -46,7 +46,7 @@ export function ProductCard({ product }: Props) {
         {/* Name + wishlist */}
         <div className="flex items-start justify-between gap-2">
           <Link
-            href={`/products/${product.id}`}
+            href={`/products/${product._id ?? product.id}`}
             className="flex-1 text-sm font-semibold leading-snug text-[#191c1e] line-clamp-2 hover:text-[#00685f] transition-colors"
           >
             {product.name}
