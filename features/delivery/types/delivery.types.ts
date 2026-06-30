@@ -13,6 +13,8 @@ export type DeliveryJob = {
 
 export type DriverDashboard = {
   activeJob: DeliveryJob | null;
-  history: DeliveryJob[];
+  jobHistory: DeliveryJob[];
   totalEarning: number;
+  completedCount: number;
+  walletBalance: number;
 };

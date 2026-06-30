@@ -12,7 +12,7 @@ export function useDriverDashboard() {
   useEffect(() => {
     deliveryService
       .getDashboard()
-      .then((res) => setData(res.data))
+      .then((res) => setData((res as any).data ?? res))
       .catch((err) => setError(err?.message ?? "Gagal memuat dashboard"))
       .finally(() => setIsLoading(false));
   }, []);
