@@ -11,15 +11,28 @@ export type BuyerSpending = {
 };
 
 export type SellerRevenueOrder = {
-  id: string;
+  orderId: string;
+  buyerName: string;
   createdAt: string;
   finalTotal: number;
   status: string;
 };
 
+export type MonthlyTrendPoint = {
+  month: string;
+  revenue: number;
+};
+
 export type SellerRevenue = {
-  totalRevenue: number;
-  incomingCount: number;
-  processedCount: number;
+  storeName: string;
+  totals: {
+    totalRevenue: number;
+    totalOrders: number;
+    completedOrders: number;
+    curMonthRevenue: number;
+    prevMonthRevenue: number;
+  };
+  countByStatus: Record<string, number>;
+  monthlyTrend: MonthlyTrendPoint[];
   orders: SellerRevenueOrder[];
 };
