@@ -37,7 +37,7 @@ export function LoginForm() {
       <div className="space-y-1.5">
         <div className="flex justify-between items-center px-1">
           <label className="text-sm font-medium text-[#3d4947]">Kata Sandi</label>
-          <a href="#" className="text-xs text-[#00685f] hover:underline">Lupa Sandi?</a>
+          <a href="/forgot-password" className="text-xs text-[#00685f] hover:underline">Lupa Sandi?</a>
         </div>
         <div className="relative group">
           <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
