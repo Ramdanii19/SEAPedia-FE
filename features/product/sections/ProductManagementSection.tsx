@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { Plus } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Plus, Store } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -15,14 +16,28 @@ import { ProductRow } from "../components/ProductRow";
 import { DeleteConfirmModal } from "../components/DeleteConfirmModal";
 import { useMyProducts } from "../hooks/useMyProducts";
 import productService from "../service/product.service";
+import storeService from "@/features/store/service/store.service";
 
 export function ProductManagementSection() {
   const { products, isLoading, reload } = useMyProducts();
   const [formProduct, setFormProduct] = useState<Product | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
+  const [hasStore, setHasStore] = useState<boolean | null>(null);
+  const [showNoStoreModal, setShowNoStoreModal] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    storeService.getMyStore()
+      .then(() => setHasStore(true))
+      .catch(() => setHasStore(false));
+  }, []);
 
   function openCreate() {
+    if (hasStore === false) {
+      setShowNoStoreModal(true);
+      return;
+    }
     setFormProduct(null);
     setShowForm(true);
   }
@@ -148,6 +163,38 @@ export function ProductManagementSection() {
         onConfirm={handleDelete}
         productName={deleteTarget?.name ?? ""}
       />
+
+      {/* No Store Modal */}
+      <Dialog open={showNoStoreModal} onOpenChange={setShowNoStoreModal}>
+        <DialogContent className="max-w-sm">
+          <div className="flex flex-col items-center gap-4 py-2 text-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#f0f5f4]">
+              <Store size={26} className="text-[#00685f]" />
+            </div>
+            <div>
+              <h3 className="text-base font-semibold text-[#191c1e]">Toko Belum Dibuat</h3>
+              <p className="mt-1.5 text-sm text-[#6d7a77]">
+                Anda belum memiliki toko. Buat toko terlebih dahulu sebelum menambahkan produk.
+              </p>
+            </div>
+            <div className="flex w-full flex-col gap-2 pt-1">
+              <Button
+                onClick={() => router.push("/seller/store")}
+                className="w-full bg-[#00685f] hover:bg-[#005049]"
+              >
+                Buat Toko Sekarang
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setShowNoStoreModal(false)}
+                className="w-full border-[#bcc9c6] text-[#3d4947] hover:bg-[#f2f4f6]"
+              >
+                Nanti Saja
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

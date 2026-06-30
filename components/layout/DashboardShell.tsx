@@ -12,6 +12,7 @@ export type DashboardMenuItem = {
   label: string;
   href: string;
   icon?: ReactNode;
+  exact?: boolean;
 };
 
 type SidebarNavProps = {
@@ -24,9 +25,10 @@ function SidebarNav({ menu, pathname, onNavigate }: SidebarNavProps) {
   return (
     <div className="flex flex-col h-full">
       <nav className="flex-1 px-3 py-4 flex flex-col gap-0.5">
-        {menu.map(({ label, href, icon }) => {
+        {menu.map(({ label, href, icon, exact }) => {
           const isActive =
-            pathname === href || (href !== "/" && pathname.startsWith(href));
+            pathname === href ||
+            (!exact && href !== "/" && pathname.startsWith(href + "/"));
           return (
             <Link
               key={href + label}

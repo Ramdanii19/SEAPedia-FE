@@ -5,7 +5,7 @@ import { RouteGuard } from "@/features/auth";
 import { DashboardShell, DashboardMenuItem } from "@/components/layout";
 
 const MENU: DashboardMenuItem[] = [
-  { label: "Dashboard",  href: "/admin",           icon: <LayoutDashboard size={18} /> },
+  { label: "Dashboard",  href: "/admin",           icon: <LayoutDashboard size={18} />, exact: true },
   { label: "Pengguna",   href: "/admin/users",     icon: <Users size={18} /> },
   { label: "Diskon",     href: "/admin/discounts", icon: <Tag size={18} /> },
   { label: "Laporan",    href: "/admin/reports",   icon: <BarChart2 size={18} /> },

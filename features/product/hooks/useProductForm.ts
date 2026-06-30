@@ -29,8 +29,8 @@ export function useProductForm({ productId, defaultValues, onSuccess }: Options)
     defaultValues: {
       name: "",
       description: "",
-      price: 0,
-      stock: 0,
+      price: undefined as unknown as number,
+      stock: undefined as unknown as number,
       imageUrl: "",
       ...defaultValues,
     },
