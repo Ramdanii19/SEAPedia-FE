@@ -15,21 +15,34 @@ export type MonitoringTab =
 
 type TabState = {
   data: any[] | null;
+  total: number | null;
   isLoading: boolean;
   error: string | null;
 };
 
-const INITIAL: TabState = { data: null, isLoading: false, error: null };
+const INITIAL: TabState = { data: null, total: null, isLoading: false, error: null };
 
-const FETCHERS: Record<MonitoringTab, () => Promise<{ data: any }>> = {
-  users: adminService.getUsers,
-  stores: adminService.getStores,
-  products: adminService.getProducts,
-  orders: adminService.getOrders,
-  vouchers: adminService.getVouchers,
-  promos: adminService.getPromos,
+// Key di dalam res.data yang berisi array untuk masing-masing tab
+const DATA_KEYS: Record<MonitoringTab, string> = {
+  users:      "users",
+  stores:     "stores",
+  products:   "products",
+  orders:     "orders",
+  vouchers:   "vouchers",
+  promos:     "promos",
+  deliveries: "jobs",
+  overdue:    "orders",
+};
+
+const FETCHERS: Record<MonitoringTab, () => Promise<any>> = {
+  users:      adminService.getUsers,
+  stores:     adminService.getStores,
+  products:   adminService.getProducts,
+  orders:     adminService.getOrders,
+  vouchers:   adminService.getVouchers,
+  promos:     adminService.getPromos,
   deliveries: adminService.getDeliveryJobs,
-  overdue: adminService.getOverdueOrders,
+  overdue:    adminService.getOverdueOrders,
 };
 
 export function useMonitoring() {
@@ -38,19 +51,22 @@ export function useMonitoring() {
   const load = useCallback(async (tab: MonitoringTab) => {
     setCache((prev) => ({
       ...prev,
-      [tab]: { data: null, isLoading: true, error: null },
+      [tab]: { data: null, total: null, isLoading: true, error: null },
     }));
     try {
       const res = await FETCHERS[tab]();
-      const data = res.data;
+      // res = { success, data: { [key]: [...], pagination: {...} }, message }
+      const raw   = res.data ?? res;
+      const items = raw?.[DATA_KEYS[tab]] ?? [];
+      const total = raw?.pagination?.total ?? items.length;
       setCache((prev) => ({
         ...prev,
-        [tab]: { data: Array.isArray(data) ? data : data?.items ?? data?.data ?? [], isLoading: false, error: null },
+        [tab]: { data: items, total, isLoading: false, error: null },
       }));
     } catch (err: any) {
       setCache((prev) => ({
         ...prev,
-        [tab]: { data: [], isLoading: false, error: err?.message ?? "Gagal memuat data" },
+        [tab]: { data: [], total: 0, isLoading: false, error: err?.message ?? "Gagal memuat data" },
       }));
     }
   }, []);
