@@ -9,6 +9,7 @@ export type DeliveryJob = {
   earning: number;
   takenAt?: string;
   completedAt?: string;
+  createdAt?: string;
 };
 
 export type DriverDashboard = {
